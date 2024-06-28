@@ -13,19 +13,19 @@ public class OrderService : IOrderService
         _orderRepository = orderRepository;
     }
 
-    public async Task<IEnumerable<Order>> GetOrders() => 
-        await _orderRepository.GetAll();
+    public async Task<IEnumerable<Order>> GetOrdersAsync() => 
+        await _orderRepository.GetAllAsync();
     
-    public async Task<Order?> GetOrder(int id) =>
-        await _orderRepository.GetById(id);
+    public async Task<Order?> GetOrderAsync(int id) =>
+        await _orderRepository.GetByIdAsync(id);
 
-    public async Task CreateOrder(Order order) =>
+    public async Task CreateOrderAsync(Order order) =>
         await _orderRepository.Add(order);
 
-    public async Task UpdateOrderStatus(int orderId, Status status) => 
-        await _orderRepository.UpdateStatus(orderId, status);
+    public async Task UpdateOrderStatusAsync(int orderId, Status status) => 
+        await _orderRepository.UpdateStatusAsync(orderId, status);
     
-    public async Task CancelOrder(int id) =>
-        await _orderRepository.Delete(id);
+    public async Task CancelOrderAsync(int id) =>
+        await _orderRepository.DeleteAsync(id);
     
 }

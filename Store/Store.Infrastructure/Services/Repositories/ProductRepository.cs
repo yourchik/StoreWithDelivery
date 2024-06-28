@@ -14,9 +14,9 @@ public class ProductRepository : IProductRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Product>> GetAll() => await _dbContext.Products.ToListAsync();
+    public async Task<IEnumerable<Product>> GetAllAsync() => await _dbContext.Products.ToListAsync();
 
-    public async Task<Product?> GetById(int id) => await _dbContext.Products.FindAsync(id);
+    public async Task<Product?> GetByIdAsync(int id) => await _dbContext.Products.FindAsync(id);
 
     public async Task Add(Product entity)
     {
@@ -24,7 +24,7 @@ public class ProductRepository : IProductRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task Delete(int id)
+    public async Task DeleteAsync(int id)
     {
         var product = await _dbContext.Products.FindAsync(id);
         if (product != null)

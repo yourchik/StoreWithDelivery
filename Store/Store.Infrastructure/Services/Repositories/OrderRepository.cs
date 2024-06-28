@@ -14,10 +14,10 @@ public class OrderRepository : IOrderRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Order>> GetAll() =>
+    public async Task<IEnumerable<Order>> GetAllAsync() =>
         await _dbContext.Orders.ToListAsync();
 
-    public async Task<Order?> GetById(int id) =>
+    public async Task<Order?> GetByIdAsync(int id) =>
         await _dbContext.Orders.FindAsync(id);
     
     public async Task Add(Order entity)
@@ -26,7 +26,7 @@ public class OrderRepository : IOrderRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task Delete(int id)
+    public async Task DeleteAsync(int id)
     {
         var order = await _dbContext.Orders.FindAsync(id);
         if (order != null)
@@ -36,7 +36,7 @@ public class OrderRepository : IOrderRepository
         }
     }
 
-    public async Task UpdateStatus(int orderId, Status status)
+    public async Task UpdateStatusAsync(int orderId, Status status)
     {
         var order = await _dbContext.Orders.FindAsync(orderId);
         if (order != null)
