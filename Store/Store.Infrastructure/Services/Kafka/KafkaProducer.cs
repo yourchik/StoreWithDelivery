@@ -1,6 +1,12 @@
-﻿namespace Store.Infrastructure.Services.Kafka;
+﻿using Store.Application.Services.Interfaces.Kafka;
+using Store.Domain.Entities;
 
-public class KafkaProducer
+namespace Store.Infrastructure.Services.Kafka;
+
+public class KafkaProducer : IKafkaProducer
 {
-    
+    public Task OrderCreatedAsync(Order order)
+    {
+        throw new NotImplementedException();
+    }
 }

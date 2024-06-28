@@ -10,6 +10,7 @@ public class Order : BaseEntity
 public enum Status
 {
     Created,
+    Accepted,
     Sent,
     Delivered,
     Received,
