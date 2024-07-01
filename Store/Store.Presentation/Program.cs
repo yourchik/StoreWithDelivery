@@ -26,8 +26,8 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
 // Kafka
-builder.Services.AddSingleton<IKafkaProducer, KafkaProducer>();
-builder.Services.AddSingleton<IKafkaConsumer, KafkaConsumer>();
+builder.Services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
+builder.Services.AddSingleton<IKafkaConsumerService, KafkaConsumerServiceService>();
 
 // Add controllers
 builder.Services.AddControllers();
