@@ -2,7 +2,7 @@
 
 namespace Store.Infrastructure.Services.Kafka;
 
-public class KafkaConsumer : IKafkaConsumer
+public class KafkaConsumerServiceService : IKafkaConsumerService
 {
     public Task StartAsync(CancellationToken ct)
     {

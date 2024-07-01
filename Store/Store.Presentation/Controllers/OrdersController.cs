@@ -23,7 +23,7 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetOrder(int id)
+    public async Task<IActionResult> GetOrder(Guid id)
     {
         var order = await  _orderService.GetOrderAsync(id);
         if (order == null)
@@ -41,7 +41,7 @@ public class OrdersController : ControllerBase
     }
     
     [HttpDelete("{id}")]
-    public async Task<NoContentResult> CancelOrder(int id)
+    public async Task<NoContentResult> CancelOrder(Guid id)
     {
         await  _orderService.CancelOrderAsync(id);
         return NoContent();

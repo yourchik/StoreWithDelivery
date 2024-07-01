@@ -16,12 +16,12 @@ public class ProductService : IProductService
     public async Task<IEnumerable<Product>> GetProductsAsync() =>
         await _productRepository.GetAllAsync();
 
-    public async Task<Product?> GetProductAsync(int id) =>
+    public async Task<Product?> GetProductAsync(Guid id) =>
         await _productRepository.GetByIdAsync(id);
 
     public async Task AddProductAsync(Product product) =>
         await _productRepository.Add(product);
 
-    public async Task DeleteProductAsync(int id) =>
+    public async Task DeleteProductAsync(Guid id) =>
         await _productRepository.DeleteAsync(id);
 }
