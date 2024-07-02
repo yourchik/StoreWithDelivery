@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Store.Domain.Entities;
 
-namespace Store.Infrastructure.Services.Repositories.EFCoreRepository;
+namespace Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {

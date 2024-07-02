@@ -1,17 +1,23 @@
 using Microsoft.EntityFrameworkCore;
+using Store.Application;
 using Store.Domain.Interfaces;
 using Store.Application.Services.Implementations.Entities;
 using Store.Application.Services.Interfaces.Entities;
-using Store.Application.Services.Interfaces.Kafka;
-using Store.Infrastructure.Services.Kafka;
-using Store.Infrastructure.Services.Repositories;
-using Store.Infrastructure.Services.Repositories.EFCoreRepository;
+using Store.Infrastructure;
+using Store.Infrastructure.Services.Implementations.Kafka;
+using Store.Infrastructure.Services.Implementations.Repositories;
+using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
+using Store.Infrastructure.Services.Interfaces.Kafka;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+builder.Configuration.AddEnvironmentVariables();
 
 // Database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -21,16 +27,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
-// Services
-builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped<IProductService, ProductService>();
+// Application
+builder.Services.AddInfrastructure();
 
-// Kafka
-builder.Services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
-builder.Services.AddSingleton<IKafkaConsumerService, KafkaConsumerServiceService>();
+// Integration
+builder.Services.AddApplication();
 
 // Add controllers
-builder.Services.AddControllers();
+
 
 var app = builder.Build();
 
