@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Store.Domain.Entities;
 using Store.Domain.Interfaces;
-using Store.Infrastructure.Services.Repositories.EFCoreRepository;
+using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
 
-namespace Store.Infrastructure.Services.Repositories;
+namespace Store.Infrastructure.Services.Implementations.Repositories;
 
 public class OrderRepository : IOrderRepository
 {

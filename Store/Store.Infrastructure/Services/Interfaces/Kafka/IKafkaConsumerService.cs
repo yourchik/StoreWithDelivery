@@ -1,4 +1,4 @@
-namespace Store.Application.Services.Interfaces.Kafka;
+namespace Store.Infrastructure.Services.Interfaces.Kafka;
 
 public interface IKafkaConsumerService
 {
