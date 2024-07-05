@@ -15,9 +15,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store.Presentation", "Store
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Delivery", "Delivery", "{2BD84112-CCD8-4E4C-B6E8-82DA7491C3FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delivery.Application", "Delivery\Delivery.Application\Delivery.Application.csproj", "{7524D146-A5CB-4462-BCB9-9CEAB3E61127}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delivery.Presentation", "Delivery\Delivery.Presentation\Delivery.Presentation.csproj", "{7524D146-A5CB-4462-BCB9-9CEAB3E61127}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delivery.Infrastructure", "Delivery\Delivery.Infrastructure\Delivery.Infrastructure.csproj", "{8846F47E-1655-4D34-93C6-01A140D4F560}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Delivery.Application", "Delivery\Delivery.Application\Delivery.Application.csproj", "{40A34A05-A7F9-46C3-89F3-2AC0E81C0904}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,10 @@ Global
 		{8846F47E-1655-4D34-93C6-01A140D4F560}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8846F47E-1655-4D34-93C6-01A140D4F560}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8846F47E-1655-4D34-93C6-01A140D4F560}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40A34A05-A7F9-46C3-89F3-2AC0E81C0904}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A34A05-A7F9-46C3-89F3-2AC0E81C0904}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A34A05-A7F9-46C3-89F3-2AC0E81C0904}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A34A05-A7F9-46C3-89F3-2AC0E81C0904}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{100768AD-2FCC-4BB9-8A38-3C4B2EA9ED93} = {E4A2AB69-B9B2-430D-8EDE-2C998109868E}
@@ -60,5 +66,6 @@ Global
 		{ED9D0C91-BE75-4185-A992-814BE5AFB2F2} = {E4A2AB69-B9B2-430D-8EDE-2C998109868E}
 		{7524D146-A5CB-4462-BCB9-9CEAB3E61127} = {2BD84112-CCD8-4E4C-B6E8-82DA7491C3FE}
 		{8846F47E-1655-4D34-93C6-01A140D4F560} = {2BD84112-CCD8-4E4C-B6E8-82DA7491C3FE}
+		{40A34A05-A7F9-46C3-89F3-2AC0E81C0904} = {2BD84112-CCD8-4E4C-B6E8-82DA7491C3FE}
 	EndGlobalSection
 EndGlobal

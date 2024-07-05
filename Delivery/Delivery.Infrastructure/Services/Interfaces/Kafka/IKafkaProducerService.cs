@@ -4,5 +4,5 @@ namespace Delivery.Infrastructure.Services.Interfaces.Kafka;
 
 public interface IKafkaProducerService
 {
-    Task ProduceOrderStatusUpdateAsync(OrderUpdateMessage message);
+    Task ProduceOrderStatusUpdateAsync(OrderStatusMessage message);
 }

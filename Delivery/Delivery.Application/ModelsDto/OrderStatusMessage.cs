@@ -1,6 +1,6 @@
 ﻿namespace Delivery.Application.ModelsDto;
 
-public class OrderUpdateMessage
+public class OrderStatusMessage
 {
     public Guid OrderId { get; set; }
     public OrderStatus Status { get; set; }

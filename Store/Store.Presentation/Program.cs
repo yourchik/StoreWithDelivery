@@ -1,13 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Store.Application;
 using Store.Domain.Interfaces;
-using Store.Application.Services.Implementations.Entities;
-using Store.Application.Services.Interfaces.Entities;
 using Store.Infrastructure;
-using Store.Infrastructure.Services.Implementations.Kafka;
 using Store.Infrastructure.Services.Implementations.Repositories;
 using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
-using Store.Infrastructure.Services.Interfaces.Kafka;
 
 var builder = WebApplication.CreateBuilder(args);
 
