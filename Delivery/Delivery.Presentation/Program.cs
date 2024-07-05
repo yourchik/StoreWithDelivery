@@ -1,7 +1,6 @@
-﻿using Delivery.Application.Services.Implementations.Orders;
-using Delivery.Application.Services.Interfaces.Orders;
+using Delivery.Application;
+using Delivery.Infrastructure;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -13,9 +12,8 @@ var host = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((context, services) =>
     {
-        //services.AddSingleton<IKafkaConsumerService, KafkaConsumerService>();
-        //services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
-        services.AddScoped<IOrderService, OrderService>();
+        services.AddInfrastructure(context.Configuration);
+        services.AddApplication();
     })
     .ConfigureLogging(logging =>
     {

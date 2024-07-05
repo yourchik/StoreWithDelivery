@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Store.Application.Dtos;
-using Store.Application.Services.Interfaces.Entities;
 using Store.Domain.Interfaces;
 using Store.Infrastructure.Services.Interfaces.Kafka;
 
