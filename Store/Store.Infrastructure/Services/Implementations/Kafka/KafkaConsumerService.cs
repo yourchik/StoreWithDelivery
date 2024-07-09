@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Store.Application.Dtos;
@@ -14,13 +15,13 @@ public class KafkaConsumerService : BackgroundService, IKafkaConsumerService
     private readonly IConfiguration _configuration;
     private readonly ILogger<KafkaConsumerService> _logger;
     private readonly IConsumer<Null, string> _consumer;
-    private readonly IOrderRepository _orderService;
+    private readonly IServiceProvider _serviceProvider;
 
-    public KafkaConsumerService(IConfiguration configuration, ILogger<KafkaConsumerService> logger, IOrderRepository orderService)
+    public KafkaConsumerService(IConfiguration configuration, ILogger<KafkaConsumerService> logger, IServiceProvider serviceProvider)
     {
         _configuration = configuration;
         _logger = logger;
-        _orderService = orderService;
+        _serviceProvider = serviceProvider;
 
         var config = new ConsumerConfig
         {
@@ -47,7 +48,9 @@ public class KafkaConsumerService : BackgroundService, IKafkaConsumerService
                     continue;
                 _logger.LogInformation(
                     $"Received order status update: OrderId = {orderStatus.OrderId}, Status = {orderStatus.Status}");
-                await _orderService.UpdateStatusAsync(orderStatus.OrderId, orderStatus.Status);
+                using var scope = _serviceProvider.CreateScope();
+                var orderService = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
+                await orderService.UpdateStatusAsync(orderStatus.OrderId, orderStatus.Status);
             }
         }
         catch (OperationCanceledException)

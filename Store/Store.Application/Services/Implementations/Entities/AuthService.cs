@@ -27,12 +27,12 @@ public class AuthService : IAuthService
     {
         var user = new User
         {
-            Login = registerDto.Login,
+            UserName = registerDto.UserName,
             Role = registerDto.Role
         };
         var result = await _userManager.CreateAsync(user, registerDto.Password);
         
-        if(!result.Succeeded)
+        if (!result.Succeeded)
             return (false, result.Errors.Select(e => e.Description).ToArray());
         
         return (true, null);
@@ -40,16 +40,18 @@ public class AuthService : IAuthService
 
     public async Task<(bool Succeeded, string? Message)> LoginAsync(LoginDto loginDto)
     {
-        var result = await _signInManager.PasswordSignInAsync(loginDto.Login, loginDto.Password, false, false);
+        var result = await _signInManager.PasswordSignInAsync(loginDto.UserName, loginDto.Password, false, false);
         if(!result.Succeeded)
             return (false, InvalidLoginMessage);
 
-        var user = await _userManager.FindByNameAsync(loginDto.Login);
-        if (user == null) 
+        var user = await _userManager.FindByNameAsync(loginDto.UserName);
+        
+        if (user?.UserName == null) 
             return (true, null);
+        
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.Login),
+            new Claim(ClaimTypes.Name, user.UserName),
             new Claim(ClaimTypes.Role, user.Role)
         };
 

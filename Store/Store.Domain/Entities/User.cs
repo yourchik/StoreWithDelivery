@@ -1,8 +1,8 @@
-﻿namespace Store.Domain.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class User : BaseEntity
+namespace Store.Domain.Entities;
+
+public class User : IdentityUser<Guid>
 {
-    public string Login { get; set; }
-    public string PasswordHash { get; set; }
     public string Role { get; set; }
 }

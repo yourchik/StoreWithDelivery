@@ -22,14 +22,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
-// Application
-builder.Services.AddInfrastructure();
-
 // Integration
 builder.Services.AddApplication();
 
-// Add controllers
-
+// Application
+builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 

@@ -17,7 +17,7 @@ public class KafkaConsumerService : BackgroundService, IKafkaConsumerService
     private readonly IConsumer<Null, string> _consumer;
     private readonly IOrderService _orderService;
 
-    public KafkaConsumerService(IOptions<KafkaSettings> configuration, ILogger<KafkaConsumerService> logger, IConsumer<Null, string> consumer, IOrderService orderService)
+    public KafkaConsumerService(IOptions<KafkaSettings> configuration, ILogger<KafkaConsumerService> logger, IOrderService orderService)
     {
         var config = new ConsumerConfig
         {
