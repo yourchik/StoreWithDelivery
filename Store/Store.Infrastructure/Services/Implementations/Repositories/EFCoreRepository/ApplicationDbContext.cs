@@ -1,19 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Store.Domain.Entities;
 
-namespace Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
-
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+namespace Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository
 {
-    public DbSet<Product> Products { get; set; }
-    public DbSet<Order> Orders { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
     {
-        base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<Order>()
-            .HasOne(o => o.Products);
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Products);
             
-        modelBuilder.Entity<Product>();
+            modelBuilder.Entity<Product>();
+        }
     }
 }

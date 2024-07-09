@@ -14,7 +14,7 @@ public class KafkaProducerService : IKafkaProducerService
     private readonly ILogger<KafkaProducerService> _logger;
     private readonly IOptions<KafkaSettings> _configuration;
 
-    public KafkaProducerService(IOptions<KafkaSettings> configuration, string clientId, ILogger<KafkaProducerService> logger)
+    public KafkaProducerService(IOptions<KafkaSettings> configuration, ILogger<KafkaProducerService> logger)
     {
         var config = new ProducerConfig
         {
