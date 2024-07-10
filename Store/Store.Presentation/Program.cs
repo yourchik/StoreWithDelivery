@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Store.Application;
-using Store.Domain.Interfaces;
 using Store.Infrastructure;
-using Store.Infrastructure.Services.Implementations.Repositories;
 using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,15 +16,11 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("ConnectionString")));
 
-// Repositories
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+// Application
+builder.Services.AddInfrastructure(builder.Configuration);
 
 // Integration
 builder.Services.AddApplication();
-
-// Application
-builder.Services.AddInfrastructure();
 
 var app = builder.Build();
 

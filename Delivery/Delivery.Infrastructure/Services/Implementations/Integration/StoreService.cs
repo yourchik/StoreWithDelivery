@@ -15,6 +15,6 @@ public class StoreService : IStoreService
 
     public async Task SendUpdateStatusOrderAsync(OrderStatusMessage order)
     { 
-        await _kafkaProducerService.ProduceOrderStatusUpdateAsync(order);
+        await _kafkaProducerService.OrderStatusUpdateAsync(order);
     }
 }

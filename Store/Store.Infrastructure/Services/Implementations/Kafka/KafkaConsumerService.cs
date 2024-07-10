@@ -1,32 +1,33 @@
 ﻿using System.Text.Json;
 using Confluent.Kafka;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Store.Application.Dtos;
 using Store.Domain.Interfaces;
 using Store.Infrastructure.Services.Interfaces.Kafka;
+using Store.Infrastructure.Settings;
 
 namespace Store.Infrastructure.Services.Implementations.Kafka;
 
 public class KafkaConsumerService : BackgroundService, IKafkaConsumerService
 {
-    private readonly IConfiguration _configuration;
+    private readonly KafkaSettings _kafkaSettings;
     private readonly ILogger<KafkaConsumerService> _logger;
     private readonly IConsumer<Null, string> _consumer;
     private readonly IServiceProvider _serviceProvider;
 
-    public KafkaConsumerService(IConfiguration configuration, ILogger<KafkaConsumerService> logger, IServiceProvider serviceProvider)
+    public KafkaConsumerService(IOptions<KafkaSettings> kafkaSettings, ILogger<KafkaConsumerService> logger, IServiceProvider serviceProvider)
     {
-        _configuration = configuration;
+        _kafkaSettings = kafkaSettings.Value;
         _logger = logger;
         _serviceProvider = serviceProvider;
 
         var config = new ConsumerConfig
         {
-            BootstrapServers = configuration["Kafka:BootstrapServers"],
-            GroupId = configuration["Kafka:GroupId"],
+            BootstrapServers = _kafkaSettings.BootstrapServers,
+            GroupId = _kafkaSettings.GroupId,
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
 
@@ -35,8 +36,7 @@ public class KafkaConsumerService : BackgroundService, IKafkaConsumerService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _consumer.Subscribe("order_status_topic");
-
+        _consumer.Subscribe(_kafkaSettings.TopicConsume);
         try
         {
             while (!stoppingToken.IsCancellationRequested)

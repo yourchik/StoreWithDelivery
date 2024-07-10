@@ -12,21 +12,20 @@ namespace Delivery.Infrastructure.Services.Implementations.Kafka;
 
 public class KafkaConsumerService : BackgroundService, IKafkaConsumerService
 {
-    private readonly IOptions<KafkaSettings> _configuration;
+    private readonly KafkaSettings _configuration;
     private readonly ILogger<KafkaConsumerService> _logger;
     private readonly IConsumer<Null, string> _consumer;
     private readonly IOrderService _orderService;
 
     public KafkaConsumerService(IOptions<KafkaSettings> configuration, ILogger<KafkaConsumerService> logger, IOrderService orderService)
     {
+        _configuration = configuration.Value;
         var config = new ConsumerConfig
         {
-            GroupId = configuration.Value.GroupId,
-            BootstrapServers = configuration.Value.BootstrapServers,
+            GroupId = _configuration.GroupId,
+            BootstrapServers = _configuration.BootstrapServers,
             AutoOffsetReset = AutoOffsetReset.Earliest
         };
-        
-        _configuration = configuration;
         _logger = logger;
         _consumer = new ConsumerBuilder<Null, string>(config).Build();
         _orderService = orderService;
@@ -36,7 +35,7 @@ public class KafkaConsumerService : BackgroundService, IKafkaConsumerService
     {
         try
         {
-            _consumer.Subscribe(_configuration.Value.TopicConsume);
+            _consumer.Subscribe(_configuration.TopicConsume);
             while (!stoppingToken.IsCancellationRequested)
             {
                 var consumeResult = _consumer.Consume(stoppingToken);
