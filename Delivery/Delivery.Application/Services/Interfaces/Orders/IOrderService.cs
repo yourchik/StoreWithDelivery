@@ -4,5 +4,5 @@ namespace Delivery.Application.Services.Interfaces.Orders;
 
 public interface IOrderService
 {
-    Task UpdateOrderStatus(Order order);
+    Task UpdateOrderStatus(Order order, OrderStatus newStatus);
 }
