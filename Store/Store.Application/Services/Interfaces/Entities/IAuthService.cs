@@ -1,10 +1,11 @@
-﻿using Store.Application.DTOs;
+﻿using Store.Application.Dtos.Auth;
+using Store.Application.Services.Interfaces.Results;
 
 namespace Store.Application.Services.Interfaces.Entities;
 
 public interface IAuthService
 {
-    Task<(bool Succeeded, string[]? Errors)> RegisterAsync(RegisterDto registerDto);
-    Task<(bool Succeeded, string? Message)> LoginAsync(LoginDto loginDto);
-    Task LogoutAsync();
+    Task<IResult> RegisterAsync(RegisterUserDto registerUserDto);
+    Task<IResult> LoginAsync(LoginUserDto loginUserDto);
+    Task<IResult> LogoutAsync();
 }

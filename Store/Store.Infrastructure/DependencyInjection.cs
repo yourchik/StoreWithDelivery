@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Store.Application.Services.Interfaces.Integration;
 using Store.Domain.Interfaces;
@@ -17,15 +19,24 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<KafkaSettings>(configuration.GetSection("KafkaSettings"));
-        services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
-        services.AddHostedService<KafkaConsumerService>();
-        services.AddTransient<IDeliveryService, DeliveryService>();
-        services.AddScoped<IProductRepository, ProductRepository>();
-        services.AddScoped<IOrderRepository, OrderRepository>();
+        //services.Configure<KafkaSettings>(configuration.GetSection("KafkaSettings"));
+        // services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
+        // services.AddHostedService<KafkaConsumerService>();
+        // services.AddTransient<IDeliveryService, DeliveryService>();
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("Postgres")));
         services.AddIdentity<User, Role>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Auth/Login";
+                options.AccessDeniedPath = "/Auth/AccessDenied";
+            });
+        
+        services.AddScoped<IProductRepository, ProductRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
         return services;
     }
 }
