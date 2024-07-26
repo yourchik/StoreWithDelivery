@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Store.Application;
 using Store.Infrastructure;
 using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
@@ -6,11 +7,14 @@ using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepositor
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 builder.Configuration.AddEnvironmentVariables();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "StoreApi", Version = "v1" });
+});
 
 // Application
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -19,12 +23,11 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();
 
 var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "StoreApi V1");
+});
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
