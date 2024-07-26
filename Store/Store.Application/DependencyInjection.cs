@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Store.Application.Middleware;
 using Store.Application.Services.Implementations.Entities;
 using Store.Application.Services.Interfaces.Entities;
 
@@ -11,6 +12,7 @@ public static class DependencyInjection
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddTransient<IAuthService, AuthService>();
+        services.AddSingleton<ExceptionHandlerMapping>();
         return services;
     }
 }

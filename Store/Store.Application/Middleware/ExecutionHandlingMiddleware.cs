@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Store.Application.Dtos.Errors;
+using Store.Application.Middleware.CustomersExeption;
 
 namespace Store.Application.Middleware;
 
@@ -11,11 +12,14 @@ public class ExecutionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExecutionHandlingMiddleware> _logger;
+    private readonly ExceptionHandlerMapping _exceptionHandlerMapping;
 
     public ExecutionHandlingMiddleware(
         RequestDelegate next, 
-        ILogger<ExecutionHandlingMiddleware> logger)
+        ILogger<ExecutionHandlingMiddleware> logger,
+        ExceptionHandlerMapping exceptionHandlerMapping)
     {
+        _exceptionHandlerMapping = exceptionHandlerMapping;
         _next = next;
         _logger = logger;
     }
@@ -26,33 +30,20 @@ public class ExecutionHandlingMiddleware
         {
             await _next(httpContext);
         }
-        catch (ArgumentNullException ex)
-        {
-            await HandleExceptionAsync(httpContext, ex.Message, 
-                HttpStatusCode.BadRequest, "Invalid argument provided.");
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            await HandleExceptionAsync(httpContext, ex.Message,
-                HttpStatusCode.Unauthorized, "Access denied.");
-        }
         catch (Exception ex)
         {
-            await HandleExceptionAsync(httpContext, ex.Message,
-                HttpStatusCode.InternalServerError, "An unexpected error occurred.");
+            await HandleExceptionAsync(httpContext, ex);
         }
     }
     
-    private async Task HandleExceptionAsync(
-        HttpContext httpContent, string exceptionMessage, 
-        HttpStatusCode httpStatusCode, string message)
+    private async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
     {
-        _logger.LogError(exceptionMessage);
-        var response = httpContent.Response;
+        _logger.LogError(exception, exception.Message);
+        var response = httpContext.Response;
         response.ContentType = "application/json";
-        response.StatusCode = (int)httpStatusCode;
-
-        var middlewareError = new MiddlewareError(message, (int)httpStatusCode);
+        var handler = _exceptionHandlerMapping.GetHandler(exception);
+        response.StatusCode = (int)handler.HttpStatusCode;
+        var middlewareError = new MiddlewareError(handler.Message, (int)handler.HttpStatusCode);
         var result = JsonSerializer.Serialize(middlewareError);
         await response.WriteAsync(result);
     }
