@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Store.Application;
+using Store.Application.Middleware;
 using Store.Infrastructure;
 using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
 
@@ -28,6 +29,8 @@ app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "StoreApi V1");
 });
+
+app.UseMiddleware<ExecutionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
