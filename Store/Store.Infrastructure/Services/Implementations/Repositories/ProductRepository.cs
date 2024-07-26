@@ -14,23 +14,37 @@ public class ProductRepository : IProductRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync() => await _dbContext.Products.ToListAsync();
+    public async Task<(IEnumerable<Product> Entities, bool IsSuccess, string ErrorMessage)> GetAllAsync()
+    {
+        var products = await _dbContext.Products.ToListAsync();
+        if (products.Count == 0)
+            return (products, false, $"Order not found.");
+        return (products, true, string.Empty);
+    }
 
-    public async Task<Product?> GetByIdAsync(Guid id) => await _dbContext.Products.FindAsync(id);
+    public async Task<(Product? Entity, bool IsSuccess, string ErrorMessage)> GetByIdAsync(Guid id)
+    {
+        var product = await _dbContext.Products.FindAsync(id);
+        if (product == null)
+            return (null, false, $"Product with ID {id} not found.");
+        return (product, true, string.Empty);
+    }
 
-    public async Task Add(Product entity)
+    public async Task<(bool IsSuccess, string ErrorMessage)> AddAsync(Product entity)
     {
         await _dbContext.Products.AddAsync(entity);
         await _dbContext.SaveChangesAsync();
+        return (true, string.Empty);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<(bool IsSuccess, string ErrorMessage)> DeleteAsync(Guid id)
     {
         var product = await _dbContext.Products.FindAsync(id);
-        if (product != null)
-        {
-            _dbContext.Products.Remove(product);
-            await _dbContext.SaveChangesAsync();
-        }
+        if (product == null)
+            return (false, $"Product with ID {id} not found.");
+        _dbContext.Products.Remove(product);
+        await _dbContext.SaveChangesAsync();
+        return (true, string.Empty);
     }
 }
+

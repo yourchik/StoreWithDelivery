@@ -14,35 +14,50 @@ public class OrderRepository : IOrderRepository
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<Order>> GetAllAsync() =>
-        await _dbContext.Orders.ToListAsync();
+    public async Task<(IEnumerable<Order> Entities, bool IsSuccess, string ErrorMessage)> GetAllAsync()
+    {
+        var orders = await _dbContext.Orders.ToListAsync();
+        if (orders.Count == 0)
+            return (new List<Order>(), false, string.Empty);    
+        return (orders, true, $"No orders found.");
+    }
 
-    public async Task<Order?> GetByIdAsync(Guid id) =>
-        await _dbContext.Orders.FindAsync(id);
+    public async Task<(Order? Entity, bool IsSuccess, string ErrorMessage)> GetByIdAsync(Guid id)
+    {
+        var order = await _dbContext.Orders.FindAsync(id);
+        if (order == null)
+            return (null, false, $"Order with ID {id} not found.");
+
+        return (order, true, string.Empty);
+    }
+        
     
-    public async Task Add(Order entity)
+    public async Task<(bool IsSuccess, string ErrorMessage)> AddAsync(Order entity)
     {
         await _dbContext.Orders.AddAsync(entity);
         await _dbContext.SaveChangesAsync();
+        return (true, string.Empty);
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task<(bool IsSuccess, string ErrorMessage)> DeleteAsync(Guid id)
     {
         var order = await _dbContext.Orders.FindAsync(id);
-        if (order != null)
-        {
-            _dbContext.Orders.Remove(order);
-            await _dbContext.SaveChangesAsync();
-        }
+        if (order == null)
+            return (false, $"Order with ID {id} not found.");
+
+        _dbContext.Orders.Remove(order);
+        await _dbContext.SaveChangesAsync();
+        return (true, string.Empty);
     }
 
-    public async Task UpdateStatusAsync(Guid id, OrderStatus status)
+    public async Task<(bool IsSuccess, string ErrorMessage)> UpdateStatusAsync(Guid id, OrderStatus status)
     {
         var order = await _dbContext.Orders.FindAsync(id);
-        if (order != null)
-        {
-            order.Status = status;
-            await _dbContext.SaveChangesAsync();
-        }
+        if (order == null)
+            return (false, $"Order with ID {id} not found.");
+        
+        order.Status = status;
+        await _dbContext.SaveChangesAsync();
+        return (true, string.Empty);
     }
 }

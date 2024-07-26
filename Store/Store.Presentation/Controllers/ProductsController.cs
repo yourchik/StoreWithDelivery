@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Store.Application.Dtos.Product;
 using Store.Application.Services.Interfaces.Entities;
 using Store.Domain.Entities;
 
@@ -17,35 +18,39 @@ public class ProductsController : ControllerBase
         _productService = productService;
     }
 
-    [HttpGet]
-    public async Task<OkObjectResult> GetProducts()
+    [HttpGet("GetProducts")]
+    public async Task<IActionResult> GetProducts()
     {
         var products = await _productService.GetProductsAsync();
-        return Ok(products);
+        if (!products.IsSuccess)
+            return StatusCode(StatusCodes.Status500InternalServerError, products.Errors);
+        return Ok(products.Value);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("GetProduct/{id}")]
     public async Task<IActionResult> GetProduct(Guid id)
     {
         var product = await _productService.GetProductAsync(id);
-        if (product == null)
-        {
-            return NotFound();
-        }
-        return Ok(product);
+        if (!product.IsSuccess)
+            return StatusCode(StatusCodes.Status500InternalServerError, product.Errors);
+        return Ok(product.Value);
     }
 
-    [HttpPost]
-    public async Task<CreatedAtActionResult> AddProduct([FromBody]Product product)
+    [HttpPost("CreateProduct")]
+    public async Task<IActionResult> CreateProductAsync([FromBody]CreateProductDto createProduct)
     {
-        await _productService.AddProductAsync(product);
-        return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+        var product = await _productService.CreateProductAsync(createProduct);
+        if(!product.IsSuccess)
+            return StatusCode(StatusCodes.Status500InternalServerError, product.Errors);
+        return Ok(product.Value);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<NoContentResult> DeleteProduct(Guid guid)
+    [HttpDelete("DeleteProduct/{id}")]
+    public async Task<IActionResult> DeleteProduct(Guid guid)
     {
-        await _productService.DeleteProductAsync(guid);
-        return NoContent();
+        var product = await _productService.DeleteProductAsync(guid);
+        if (!product.IsSuccess)
+            return StatusCode(StatusCodes.Status500InternalServerError, product.Errors);
+        return Ok(product.IsSuccess);
     }   
 }

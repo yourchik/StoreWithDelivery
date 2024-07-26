@@ -4,5 +4,5 @@ namespace Store.Domain.Interfaces;
 
 public interface IOrderRepository : IBaseRepository<Order>
 {
-    Task UpdateStatusAsync(Guid id, OrderStatus status);
+    Task<(bool IsSuccess, string ErrorMessage)> UpdateStatusAsync(Guid id, OrderStatus status);
 }

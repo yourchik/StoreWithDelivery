@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Store.Domain.Entities;
 
@@ -17,11 +18,59 @@ namespace Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepos
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Products);
             
+            ConfigureIdentityTables(modelBuilder);
+            ConfigureEntityTables(modelBuilder);
+        }
+
+        private static void ConfigureEntityTables(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Order>()
+                .HasMany(o => o.Products)
+                .WithMany()
+                .UsingEntity(j => j.ToTable("OrderProductsManyToMany"));
             modelBuilder.Entity<Product>();
+            
+            modelBuilder.Entity<Product>().HasKey(p => p.Id);
+            modelBuilder.Entity<Order>().HasKey(o => o.Id);
+        }
+        
+        private static void ConfigureIdentityTables(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable(name: "Users");
+            });
+
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.ToTable(name: "Roles");
+            });
+
+            modelBuilder.Entity<IdentityUserRole<Guid>>(entity =>
+            {
+                entity.ToTable("UserRoles");
+            });
+
+            modelBuilder.Entity<IdentityUserClaim<Guid>>(entity =>
+            {
+                entity.ToTable("UserClaims");
+            });
+
+            modelBuilder.Entity<IdentityUserLogin<Guid>>(entity =>
+            {
+                entity.ToTable("UserLogins");
+            });
+
+            modelBuilder.Entity<IdentityRoleClaim<Guid>>(entity =>
+            {
+                entity.ToTable("RoleClaims");
+            });
+
+            modelBuilder.Entity<IdentityUserToken<Guid>>(entity =>
+            {
+                entity.ToTable("UserTokens");
+            });
         }
     }
 }

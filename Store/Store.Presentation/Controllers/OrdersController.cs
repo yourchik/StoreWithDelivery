@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Store.Application.Dtos.Order;
 using Store.Application.Services.Interfaces.Entities;
 using Store.Domain.Entities;
 
@@ -17,35 +18,41 @@ public class OrdersController : ControllerBase
         _orderService = orderService;
     }
 
-    [HttpGet]
-    public async Task<OkObjectResult> GetOrders()
+    [HttpGet("GetOrders")]
+    public async Task<IActionResult> GetOrders()
     {
         var orders = await _orderService.GetOrdersAsync();
-        return Ok(orders);
+        if(!orders.IsSuccess)
+            return StatusCode(StatusCodes.Status500InternalServerError, orders.Errors);
+        return Ok(orders.Value);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("GetOrder/{id}")]
     public async Task<IActionResult> GetOrder(Guid id)
     {
-        var order = await  _orderService.GetOrderAsync(id);
-        if (order == null)
-        {
-            return NotFound();
-        }
-        return Ok(order);
+        var order = await _orderService.GetOrderAsync(id);
+        if (!order.IsSuccess)
+            return StatusCode(StatusCodes.Status500InternalServerError, order.Errors);
+        return Ok(order.Value);
+        
     }
 
-    [HttpPost]
-    public async Task<IActionResult> CreateOrder([FromBody]Order order)
+    [HttpPost("CreateOrder")]
+    public async Task<IActionResult> CreateOrder([FromBody]CreateOrderDto orderDto)
     {
-        await  _orderService.CreateOrderAsync(order);
-        return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
+        var order = await  _orderService.CreateOrderAsync(orderDto);
+        if (!order.IsSuccess)
+            return StatusCode(StatusCodes.Status500InternalServerError, order.Errors);
+        return Ok(order.Value);
     }
     
-    [HttpDelete("{id}")]
-    public async Task<NoContentResult> CancelOrder(Guid id)
+    [HttpDelete("CancelOrder/{id}")]
+    public async Task<IActionResult> CancelOrder(Guid id)
     {
-        await  _orderService.CancelOrderAsync(id);
-        return NoContent();
+        var order = await _orderService.CancelOrderAsync(id);
+        if (!order.IsSuccess)
+            return StatusCode(StatusCodes.Status500InternalServerError, order.Errors);
+
+        return Ok(order.IsSuccess);
     }
 }

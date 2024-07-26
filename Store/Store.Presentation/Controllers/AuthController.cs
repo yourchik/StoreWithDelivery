@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Store.Application.DTOs;
+using Store.Application.Dtos.Auth;
 using Store.Application.Services.Interfaces.Entities;
 
 namespace Store.Presentation.Controllers;
@@ -16,27 +16,27 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto registerDto)
+    public async Task<IActionResult> Register(RegisterUserDto registerUserDto)
     {
-        var result = await _authService.RegisterAsync(registerDto);
-        if(!result.Succeeded)
+        var result = await _authService.RegisterAsync(registerUserDto);
+        if(!result.IsSuccess)
             return BadRequest(result.Errors);
         return Ok(new { Message = "User register successfully!" });
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginDto loginDto)
+    public async Task<IActionResult> Login(LoginUserDto loginUserDto)
     {
-        var result = await _authService.LoginAsync(loginDto);
-        if(!result.Succeeded)
-            return Unauthorized(result.Message);
-        return Ok(new { result.Message });
+        var result = await _authService.LoginAsync(loginUserDto);
+        if(!result.IsSuccess)
+            return Unauthorized(result.Errors);
+        return Ok(result.IsSuccess);
     }
     
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
-        await _authService.LogoutAsync();
-        return Ok();
+        var result = await _authService.LogoutAsync();
+        return Ok(result.IsSuccess);
     }
 }
