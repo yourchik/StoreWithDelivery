@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Store.Application;
+using Store.Application.Middleware;
 using Store.Infrastructure;
 using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
 
@@ -29,6 +30,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExecutionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
