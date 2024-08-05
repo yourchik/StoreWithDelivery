@@ -6,6 +6,5 @@ public enum OrderStatus
     Accepted,
     Sent,
     Delivered,
-    Received,
     Cancelled
 }

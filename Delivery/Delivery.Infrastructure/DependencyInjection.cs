@@ -2,9 +2,11 @@
 using Delivery.Application.Services.Interfaces.Integration;
 using Delivery.Infrastructure.Services.Implementations.Integration;
 using Delivery.Infrastructure.Services.Implementations.Kafka;
+using Delivery.Infrastructure.Services.Implementations.RabbitMQ;
 using Delivery.Infrastructure.Services.Implementations.Sheduler;
 using Delivery.Infrastructure.Services.Implementations.Sheduler.Jobs;
 using Delivery.Infrastructure.Services.Interfaces.Kafka;
+using Delivery.Infrastructure.Services.Interfaces.RabbitMQ;
 using Delivery.Infrastructure.Services.Interfaces.Sheduler;
 using Delivery.Infrastructure.Settings;
 using Hangfire;
@@ -18,14 +20,16 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<KafkaSettings>(configuration.GetSection(nameof(KafkaSettings)));
+        services.Configure<RabbitMqSettings>(configuration.GetSection(nameof(RabbitMqSettings)));
+        //services.Configure<KafkaSettings>(configuration.GetSection(nameof(KafkaSettings)));
         services.Configure<HangfireSettings>(configuration.GetSection(nameof(HangfireSettings)));
+        var test = configuration.GetConnectionString("Postgres");
         services.AddHangfire(config =>
             config.UsePostgreSqlStorage(c =>
-                c.UseNpgsqlConnection(configuration.GetConnectionString("HangfireConnection"))));  
+                c.UseNpgsqlConnection(configuration.GetConnectionString("Postgres"))));  
         services.AddHangfireServer();
-        services.AddHostedService<KafkaConsumerService>();
-        services.AddScoped<IKafkaProducerService, KafkaProducerService>();
+        services.AddScoped<IRabbitMqProducerService, RabbitMqProducerService>();
+        services.AddHostedService<RabbitMqConsumerService>();
         services.AddScoped<IStoreService, StoreService>();
         services.AddTransient<IHangFireService, HangFireService>();
         services.AddTransient<IJob<Order>, UpdateOrderStatusJob>();

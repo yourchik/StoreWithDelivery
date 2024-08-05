@@ -13,16 +13,16 @@ public class OrderService : IOrderService
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IProductService _productService;
-    //private readonly IDeliveryService _deliveryService;
+    private readonly IDeliveryService _deliveryService;
 
     public OrderService(IOrderRepository orderRepository, 
-        IProductService productService
-        //, IDeliveryService deliveryService
+        IProductService productService,
+        IDeliveryService deliveryService
         )
     {
         _orderRepository = orderRepository;
         _productService = productService;
-        //_deliveryService = deliveryService;
+        _deliveryService = deliveryService;
     }
 
     public async Task<EntityResult<IEnumerable<Order>>> GetOrdersAsync()
@@ -72,7 +72,7 @@ public class OrderService : IOrderService
         };
 
         await _orderRepository.AddAsync(order);
-        // await _deliveryService.SendOrderToDeliveryAsync(order);
+        await _deliveryService.SendOrderToDeliveryAsync(order);
         return EntityResult<Order>.Success(order);
     }
 

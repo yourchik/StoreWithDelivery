@@ -5,6 +5,9 @@ project.lock.json
 *.pyc
 nupkg/
 
+# Visual Studio 2015
+.vs/
+
 # Visual Studio Code
 .vscode
 
@@ -32,6 +35,5 @@ bld/
 msbuild.log
 msbuild.err
 msbuild.wrn
+/rabbitmq
 
-# Visual Studio 2015
-.vs/

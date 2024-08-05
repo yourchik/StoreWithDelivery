@@ -16,5 +16,17 @@
     <ProjectReference Include="..\Delivery.Application\Delivery.Application.csproj" />
     <ProjectReference Include="..\Delivery.Infrastructure\Delivery.Infrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.Development.json">
+      <DependentUpon>appsettings.json</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+      <ExcludeFromPublish>true</ExcludeFromPublish>
+    </None>
+  </ItemGroup>
   
 </Project>

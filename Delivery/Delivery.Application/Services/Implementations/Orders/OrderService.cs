@@ -18,7 +18,7 @@ public class OrderService : IOrderService
     
     public async  Task UpdateOrderStatus(Order order, OrderStatus newStatus)
     {
-        if (order.Status == OrderStatus.Cancelled || order.Status == OrderStatus.Delivered)
+        if (order.Status is OrderStatus.Cancelled or OrderStatus.Delivered)
         {
             _logger.LogInformation("Order {orderId} was cancelled or already delivered", order.Id);
             return;
