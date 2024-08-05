@@ -8,9 +8,11 @@ using Store.Domain.Interfaces;
 using Store.Domain.Entities;
 using Store.Infrastructure.Services.Implementations.Integration;
 using Store.Infrastructure.Services.Implementations.Kafka;
+using Store.Infrastructure.Services.Implementations.RabbitMQ;
 using Store.Infrastructure.Services.Implementations.Repositories;
 using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
 using Store.Infrastructure.Services.Interfaces.Kafka;
+using Store.Infrastructure.Services.Interfaces.RabbitMQ;
 using Store.Infrastructure.Settings;
 
 namespace Store.Infrastructure;
@@ -20,9 +22,10 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         //services.Configure<KafkaSettings>(configuration.GetSection("KafkaSettings"));
-        // services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
-        // services.AddHostedService<KafkaConsumerService>();
-        // services.AddTransient<IDeliveryService, DeliveryService>();
+        services.AddTransient<IDeliveryService, DeliveryService>();
+        services.Configure<RabbitMqSettings>(configuration.GetSection("RabbitMQSettings"));
+        services.AddScoped<IRabbitMqProducerService, RabbitMqProducerService>();
+        services.AddHostedService<RabbitMqConsumerService>();
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("Postgres")));
         services.AddIdentity<User, Role>()

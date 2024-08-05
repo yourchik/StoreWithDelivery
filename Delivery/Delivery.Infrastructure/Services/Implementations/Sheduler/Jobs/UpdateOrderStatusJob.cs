@@ -13,10 +13,10 @@ public class UpdateOrderStatusJob : IJob<Order>
     private readonly IHangFireService _hangFireService;
     private readonly HangfireSettings _hangfireSettings;
     private static readonly OrderStatus[] Statuses = {
+        OrderStatus.Created,
         OrderStatus.Accepted,
         OrderStatus.Sent,
-        OrderStatus.Delivered,
-        OrderStatus.Received,
+        OrderStatus.Delivered
     };
     public UpdateOrderStatusJob(IOrderService orderService,
         IHangFireService hangFireService,

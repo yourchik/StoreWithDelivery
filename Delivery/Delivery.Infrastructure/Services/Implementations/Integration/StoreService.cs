@@ -1,21 +1,20 @@
 ﻿using Delivery.Application.ModelsDto;
 using Delivery.Application.Services.Interfaces.Integration;
-using Delivery.Infrastructure.Services.Interfaces.Kafka;
-using Delivery.Infrastructure.Services.Interfaces.Sheduler;
+using Delivery.Infrastructure.Services.Interfaces.RabbitMQ;
 
 namespace Delivery.Infrastructure.Services.Implementations.Integration;
 
 public class StoreService : IStoreService
 {
-    private readonly IKafkaProducerService _kafkaProducerService;
+    private readonly IRabbitMqProducerService _rabbitMqProducer;
 
-    public StoreService(IKafkaProducerService kafkaProducerService, IHangFireService hangFireService)
+    public StoreService(IRabbitMqProducerService kafkaProducerService)
     {
-        _kafkaProducerService = kafkaProducerService;
+        _rabbitMqProducer = kafkaProducerService;
     }
 
     public async Task SendUpdateStatusOrderAsync(OrderStatusMessage order)
     { 
-        await _kafkaProducerService.OrderStatusUpdateAsync(order);
+        await _rabbitMqProducer.OrderStatusUpdateAsync(order);
     }
 }

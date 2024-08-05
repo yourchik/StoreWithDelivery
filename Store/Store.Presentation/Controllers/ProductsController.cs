@@ -1,14 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Store.Application.Dtos.Product;
 using Store.Application.Services.Interfaces.Entities;
-using Store.Domain.Entities;
 
 namespace Store.Presentation.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class ProductsController : ControllerBase
 {
     private readonly IProductService _productService;
