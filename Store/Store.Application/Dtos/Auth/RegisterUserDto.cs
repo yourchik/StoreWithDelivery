@@ -1,6 +1,8 @@
-﻿namespace Store.Application.Dtos.Auth;
+﻿using Store.Domain.Enums;
+
+namespace Store.Application.Dtos.Auth;
 
 public class RegisterUserDto : UserDto
 {
-    public string Role { get; set; }
+    public UserRole Role { get; set; }
 }

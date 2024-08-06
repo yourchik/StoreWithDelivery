@@ -1,10 +1,7 @@
-﻿using System.Net;
-using System.Reflection.Metadata;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Store.Application.Dtos.Errors;
-using Store.Application.Middleware.CustomersExeption;
 
 namespace Store.Application.Middleware;
 

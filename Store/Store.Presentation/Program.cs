@@ -1,7 +1,8 @@
-using Microsoft.OpenApi.Models;
 using Store.Application;
 using Store.Application.Middleware;
 using Store.Infrastructure;
+using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
+using Store.Presentation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,16 +14,14 @@ builder.Configuration.AddJsonFile("appsettings.json",
 if (builder.Environment.IsDevelopment())
     builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true);
 builder.Configuration.AddEnvironmentVariables();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "StoreApi", Version = "v1" });
-});
+
+builder.Services.AddSwaggerDocumentation();
 
 // Infrastructure
 builder.Services.AddInfrastructure(builder.Configuration);
 
 // Application
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 
 var app = builder.Build();
 app.UseSwagger();
@@ -32,6 +31,11 @@ app.UseSwaggerUI(c =>
 });
 app.UseMiddleware<ExecutionHandlingMiddleware>();
 app.UseAuthentication();
+app.UseMiddleware<AdminAccessMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
+
+var dataInitializer = app.Services.GetRequiredService<DataInitializer>();
+await dataInitializer.InitializeAsync();
+
 app.Run();

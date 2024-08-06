@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Delivery.Application.ModelsDto;
-using Delivery.Application.Services.Interfaces.Orders;
 using Delivery.Infrastructure.Services.Implementations.Sheduler.Jobs;
 using Delivery.Infrastructure.Services.Interfaces.RabbitMQ;
 using Delivery.Infrastructure.Services.Interfaces.Sheduler;

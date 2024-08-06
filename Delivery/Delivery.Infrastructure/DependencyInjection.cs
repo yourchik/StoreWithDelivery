@@ -1,11 +1,9 @@
 ﻿using Delivery.Application.ModelsDto;
 using Delivery.Application.Services.Interfaces.Integration;
 using Delivery.Infrastructure.Services.Implementations.Integration;
-using Delivery.Infrastructure.Services.Implementations.Kafka;
 using Delivery.Infrastructure.Services.Implementations.RabbitMQ;
 using Delivery.Infrastructure.Services.Implementations.Sheduler;
 using Delivery.Infrastructure.Services.Implementations.Sheduler.Jobs;
-using Delivery.Infrastructure.Services.Interfaces.Kafka;
 using Delivery.Infrastructure.Services.Interfaces.RabbitMQ;
 using Delivery.Infrastructure.Services.Interfaces.Sheduler;
 using Delivery.Infrastructure.Settings;

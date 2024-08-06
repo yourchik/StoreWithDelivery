@@ -1,6 +1,5 @@
 ﻿using Store.Application.Services.Interfaces.Integration;
 using Store.Domain.Entities;
-using Store.Infrastructure.Services.Interfaces.Kafka;
 using Store.Infrastructure.Services.Interfaces.RabbitMQ;
 
 namespace Store.Infrastructure.Services.Implementations.Integration;

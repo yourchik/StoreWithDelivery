@@ -2,7 +2,6 @@
 using Delivery.Application.Services.Interfaces.Orders;
 using Delivery.Infrastructure.Services.Interfaces.Sheduler;
 using Delivery.Infrastructure.Settings;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Delivery.Infrastructure.Services.Implementations.Sheduler.Jobs;
