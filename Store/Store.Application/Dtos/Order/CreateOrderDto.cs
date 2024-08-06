@@ -1,5 +1,4 @@
-﻿using Store.Application.Dtos.Product;
-using Store.Domain.Entities;
+﻿using Store.Domain.Entities;
 
 namespace Store.Application.Dtos.Order;
 

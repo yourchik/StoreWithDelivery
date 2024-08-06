@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Store.Application.Dtos.Product;
 using Store.Application.Services.Interfaces.Entities;
+using Store.Domain.Enums;
 
 namespace Store.Presentation.Controllers;
 
+[Authorize(Roles = nameof(UserRole.Manager))]
 [ApiController]
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase

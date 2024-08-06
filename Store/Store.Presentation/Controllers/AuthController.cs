@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
         var result = await _authService.LoginAsync(loginUserDto);
         if(!result.IsSuccess)
             return Unauthorized(result.Errors);
-        return Ok(result.IsSuccess);
+        return Ok(result.Value);
     }
     
     [HttpPost("logout")]

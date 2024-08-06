@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Store.Application.Dtos.Order;
 using Store.Application.Services.Interfaces.Entities;
+using Store.Domain.Enums;
 
 namespace Store.Presentation.Controllers;
 
+[Authorize(Roles = nameof(UserRole.User))]
 [ApiController]
 [Route("api/[controller]")]
 public class OrdersController : ControllerBase
