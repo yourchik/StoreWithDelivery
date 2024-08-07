@@ -46,9 +46,9 @@ public class ProductsController : ControllerBase
     }
 
     [HttpDelete("DeleteProduct/{id}")]
-    public async Task<IActionResult> DeleteProduct(Guid guid)
+    public async Task<IActionResult> DeleteProduct(Guid id)
     {
-        var product = await _productService.DeleteProductAsync(guid);
+        var product = await _productService.DeleteProductAsync(id);
         if (!product.IsSuccess)
             return StatusCode(StatusCodes.Status500InternalServerError, product.Errors);
         return Ok(product.IsSuccess);
