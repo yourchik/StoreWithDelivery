@@ -11,6 +11,4 @@ public interface IProductService
     Task<EntityResult<Product>> GetProductAsync(Guid id);
     Task<EntityResult<Product>> CreateProductAsync(CreateProductDto createProduct);
     Task<IResult> DeleteProductAsync(Guid id);
-    Task<IResult> ReductionAmountUpdate(Guid id, int reductionAmount);
-
 }
