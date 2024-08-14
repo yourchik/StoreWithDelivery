@@ -58,4 +58,13 @@ public class ProductService : IProductService
         
         return ResultFactory.CreateResult(isSuccess);
     }
+
+    public async Task<IResult> ReductionAmountUpdate(Guid id, int reductionAmount)
+    {
+        var (isSuccess, errorMessage) = await _productRepository.ReductionAmountUpdate(id, reductionAmount);
+        if (!isSuccess)
+            return ResultFactory.CreateResult(isSuccess, errorMessage);
+        
+        return ResultFactory.CreateResult(isSuccess);
+    }
 }

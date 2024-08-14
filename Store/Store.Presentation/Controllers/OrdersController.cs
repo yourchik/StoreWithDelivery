@@ -37,6 +37,16 @@ public class OrdersController : ControllerBase
         
     }
 
+    
+    [HttpGet("GetOrderStatus/{id}")]
+    public async Task<IActionResult> GetOrderStatus(Guid id)
+    {
+        var orders = await _orderService.GetOrderStatusAsync(id);
+        if(!orders.IsSuccess)
+            return StatusCode(StatusCodes.Status500InternalServerError, orders.Errors);
+        return Ok(orders.Value);
+    }
+    
     [HttpPost("CreateOrder")]
     public async Task<IActionResult> CreateOrder([FromBody]CreateOrderDto orderDto)
     {
