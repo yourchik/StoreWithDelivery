@@ -12,4 +12,5 @@ public interface IOrderService
     Task<EntityResult<Order>> CreateOrderAsync(CreateOrderDto order);
     Task<IResult> UpdateOrderStatusAsync(Guid orderId, OrderStatus status);
     Task<IResult> CancelOrderAsync(Guid id);
+    Task<EntityResult<OrderStatus>> GetOrderStatusAsync(Guid id);
 }
