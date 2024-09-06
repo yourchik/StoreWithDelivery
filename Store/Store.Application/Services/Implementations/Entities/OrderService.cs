@@ -9,25 +9,16 @@ using Store.Domain.Interfaces;
 
 namespace Store.Application.Services.Implementations.Entities;
 
-public class OrderService : IOrderService
+public class OrderService(
+    IOrderRepository orderRepository,
+    IProductService productService,
+    IDeliveryService deliveryService,
+    IUserService userService)
+    : IOrderService
 {
-    private readonly IOrderRepository _orderRepository;
-    private readonly IProductService _productService;
-    private readonly IDeliveryService _deliveryService;
-
-    public OrderService(IOrderRepository orderRepository, 
-        IProductService productService,
-        IDeliveryService deliveryService
-        )
-    {
-        _orderRepository = orderRepository;
-        _productService = productService;
-        _deliveryService = deliveryService;
-    }
-
     public async Task<EntityResult<IEnumerable<Order>>> GetOrdersAsync()
     {
-        var (orders, isSuccess, errorMessage) = await _orderRepository.GetAllAsync();
+        var (orders, isSuccess, errorMessage) = await orderRepository.GetAllAsync();
         if (!isSuccess)
             return EntityResult<IEnumerable<Order>>.Failure(errorMessage);
 
@@ -36,7 +27,7 @@ public class OrderService : IOrderService
     
     public async Task<EntityResult<Order>> GetOrderAsync(Guid id)
     {
-        var (order, isSuccess, errorMessage) = await _orderRepository.GetByIdAsync(id);
+        var (order, isSuccess, errorMessage) = await orderRepository.GetByIdAsync(id);
     
         if (!isSuccess && !string.IsNullOrEmpty(errorMessage))
             return EntityResult<Order>.Failure(errorMessage);
@@ -46,9 +37,10 @@ public class OrderService : IOrderService
 
     public async Task<EntityResult<Order>> CreateOrderAsync(CreateOrderDto orderDto)
     {
+        
         var productResults = (await orderDto.ProductsGuid
             .ToAsyncEnumerable()
-            .SelectAwait(async productGuid => await _productService.GetProductAsync(productGuid))
+            .SelectAwait(async productGuid => await productService.GetProductAsync(productGuid))
             .ToListAsync());
         
         var errors = productResults
@@ -63,22 +55,24 @@ public class OrderService : IOrderService
             .Where(result => result is { IsSuccess: true, Value: not null })
             .Select(result => result.Value!)
             .ToList();
-        
+
+        var user = await userService.GetCurrentUserAsync();
         var order = new Order
         {
             Id = Guid.NewGuid(),
             Products = products,
-            Address = orderDto.Address
+            Address = orderDto.Address,
+            User = user
         };
 
-        await _orderRepository.AddAsync(order);
-        await _deliveryService.SendOrderToDeliveryAsync(order);
+        await orderRepository.AddAsync(order);
+        await deliveryService.SendOrderToDeliveryAsync(order);
         return EntityResult<Order>.Success(order);
     }
 
     public async Task<IResult> UpdateOrderStatusAsync(Guid orderId, OrderStatus status)
     {
-        var (isSuccess, errorMessage) = await _orderRepository.UpdateStatusAsync(orderId, status);
+        var (isSuccess, errorMessage) = await orderRepository.UpdateStatusAsync(orderId, status);
         if (!isSuccess)
             return ResultFactory.CreateResult(isSuccess, errorMessage);
         return ResultFactory.CreateResult(isSuccess);
@@ -86,7 +80,7 @@ public class OrderService : IOrderService
 
     public async Task<IResult> CancelOrderAsync(Guid id)
     {
-        var (isSuccess, errorMessage) = await _orderRepository.UpdateStatusAsync(id, OrderStatus.Cancelled);
+        var (isSuccess, errorMessage) = await orderRepository.UpdateStatusAsync(id, OrderStatus.Cancelled);
         if (!isSuccess)
             return ResultFactory.CreateResult(isSuccess, errorMessage);
         return ResultFactory.CreateResult(isSuccess);

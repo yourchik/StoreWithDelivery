@@ -29,10 +29,11 @@ app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "StoreApi V1");
 });
-app.UseMiddleware<ExecutionHandlingMiddleware>();
+
 app.UseAuthentication();
 app.UseMiddleware<AdminAccessMiddleware>();
 app.UseAuthorization();
+app.UseMiddleware<ExecutionHandlingMiddleware>();
 app.MapControllers();
 
 var dataInitializer = app.Services.GetRequiredService<DataInitializer>();

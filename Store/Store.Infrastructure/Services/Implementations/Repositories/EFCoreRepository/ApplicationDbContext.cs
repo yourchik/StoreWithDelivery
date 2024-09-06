@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Store.Domain.Entities;
+using Store.Domain.Enums;
 
 namespace Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository
 {
@@ -18,21 +19,26 @@ namespace Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepos
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
             ConfigureIdentityTables(modelBuilder);
             ConfigureEntityTables(modelBuilder);
         }
 
         private static void ConfigureEntityTables(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Order>().HasKey(o => o.Id);
+
             modelBuilder.Entity<Order>()
                 .HasMany(o => o.Products)
                 .WithMany()
                 .UsingEntity(j => j.ToTable("OrderProductsManyToMany"));
-            modelBuilder.Entity<Product>();
+            
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.User)
+                .WithMany(u => u.Orders)
+                .OnDelete(DeleteBehavior.Cascade); 
             
             modelBuilder.Entity<Product>().HasKey(p => p.Id);
-            modelBuilder.Entity<Order>().HasKey(o => o.Id);
+            
         }
         
         private static void ConfigureIdentityTables(ModelBuilder modelBuilder)
