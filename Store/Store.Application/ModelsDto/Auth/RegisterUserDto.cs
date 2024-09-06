@@ -1,6 +1,6 @@
 ﻿using Store.Domain.Enums;
 
-namespace Store.Application.Dtos.AuthDtos;
+namespace Store.Application.ModelsDto.Auth;
 
 public class RegisterUserDto : UserDto
 {

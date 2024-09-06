@@ -30,7 +30,7 @@ public static class DependencyInjection
         services.AddHostedService<RabbitMqConsumerService>();
         services.AddScoped<IStoreService, StoreService>();
         services.AddTransient<IHangFireService, HangFireService>();
-        services.AddTransient<IJob<Order>, UpdateOrderStatusJob>();
+        services.AddTransient<IJob<OrderMessage>, UpdateOrderStatusJob>();
         return services;
     }
 }

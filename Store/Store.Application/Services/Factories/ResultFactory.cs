@@ -1,4 +1,4 @@
-﻿using Store.Application.Dtos.Results;
+﻿using Store.Application.ModelsDto.Results;
 using Store.Application.Services.Interfaces.Results;
 
 namespace Store.Application.Services.Factories;

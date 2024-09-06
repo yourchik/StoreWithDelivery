@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace Delivery.Infrastructure.Services.Implementations.Sheduler.Jobs;
 
-public class UpdateOrderStatusJob : IJob<Order>
+public class UpdateOrderStatusJob : IJob<OrderMessage>
 {
     private readonly IOrderService _orderService;
     private readonly IHangFireService _hangFireService;
@@ -26,10 +26,10 @@ public class UpdateOrderStatusJob : IJob<Order>
         _hangfireSettings = hangfireSettings.Value;
     }
 
-    public async Task RunAsync(Order order, CancellationToken ct = default)
+    public async Task RunAsync(OrderMessage orderMessage, CancellationToken ct = default)
     {
-        var currentIndex = Array.IndexOf(Statuses, order.Status);
-        if (currentIndex == -1 || order.Status == OrderStatus.Cancelled || order.Status == OrderStatus.Delivered)
+        var currentIndex = Array.IndexOf(Statuses, orderMessage.Status);
+        if (currentIndex == -1 || orderMessage.Status == OrderStatus.Cancelled || orderMessage.Status == OrderStatus.Delivered)
             return;
         
         var nextIndex = currentIndex + 1;
@@ -37,8 +37,8 @@ public class UpdateOrderStatusJob : IJob<Order>
             return;
         
         var nextStatus = Statuses[nextIndex];
-        await _orderService.UpdateOrderStatus(order, nextStatus);
-        if (order.Status != OrderStatus.Delivered && order.Status != OrderStatus.Cancelled)
-            _hangFireService.Execute<UpdateOrderStatusJob>(e => e.RunAsync(order, ct), _hangfireSettings.GetStatusUpdateInterval());
+        await _orderService.UpdateOrderStatus(orderMessage, nextStatus);
+        if (orderMessage.Status != OrderStatus.Delivered && orderMessage.Status != OrderStatus.Cancelled)
+            _hangFireService.Execute<UpdateOrderStatusJob>(e => e.RunAsync(orderMessage, ct), _hangfireSettings.GetStatusUpdateInterval());
     }
 }

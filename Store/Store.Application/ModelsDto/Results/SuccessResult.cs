@@ -1,6 +1,6 @@
 ﻿using Store.Application.Services.Interfaces.Results;
 
-namespace Store.Application.Dtos.Results;
+namespace Store.Application.ModelsDto.Results;
 
 public class SuccessResult : IResult
 {

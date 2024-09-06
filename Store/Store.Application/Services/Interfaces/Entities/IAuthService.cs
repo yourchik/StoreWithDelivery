@@ -1,4 +1,4 @@
-﻿using Store.Application.Dtos.AuthDtos;
+using Store.Application.ModelsDto.Auth;
 using Store.Application.Services.Implementations.Results;
 using Store.Application.Services.Interfaces.Results;
 

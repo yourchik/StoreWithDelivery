@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Store.Application.Dtos.Errors;
+using Store.Application.ModelsDto.Errors;
 
 namespace Store.Application.Middleware;
 

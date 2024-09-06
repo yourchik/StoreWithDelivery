@@ -1,4 +1,4 @@
-﻿namespace Store.Application.Dtos.ProductDtos;
+﻿namespace Store.Application.ModelsDto.Product;
 
 public class CreateProductsCategoryDto
 {

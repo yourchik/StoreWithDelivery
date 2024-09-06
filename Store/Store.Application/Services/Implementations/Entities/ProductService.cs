@@ -1,4 +1,4 @@
-using Store.Application.Dtos.ProductDtos;
+using Store.Application.ModelsDto.Product;
 using Store.Application.Services.Factories;
 using Store.Application.Services.Implementations.Results;
 using Store.Application.Services.Interfaces.Entities;

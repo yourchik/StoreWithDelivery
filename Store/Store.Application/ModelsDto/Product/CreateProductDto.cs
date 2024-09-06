@@ -1,4 +1,4 @@
-﻿namespace Store.Application.Dtos.ProductDtos;
+﻿namespace Store.Application.ModelsDto.Product;
 
 public class CreateProductDto
 {
@@ -8,4 +8,5 @@ public class CreateProductDto
     public string Сomposition { get; set; }
     public string Producer { get; set; }
     public List<Guid> Categories { get; set; }
+
 }

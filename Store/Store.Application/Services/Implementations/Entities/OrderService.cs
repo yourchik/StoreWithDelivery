@@ -1,4 +1,4 @@
-using Store.Application.Dtos.OrderDtos;
+using Store.Application.ModelsDto.Order;
 using Store.Application.Services.Factories;
 using Store.Application.Services.Implementations.Results;
 using Store.Application.Services.Interfaces.Entities;
@@ -81,7 +81,14 @@ public class OrderService(
         };
         
         await orderRepository.AddAsync(order);
-        await deliveryService.SendOrderToDeliveryAsync(order);
+        
+        await deliveryService.SendOrderToDeliveryAsync(new OrderMessage
+        {
+            OrderId = order.Id,
+            Address = order.Address,
+            Products = order.Products,
+            Status = order.Status
+        });
         return EntityResult<Order>.Success(order);
     }
 

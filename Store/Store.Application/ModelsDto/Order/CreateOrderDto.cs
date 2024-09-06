@@ -1,7 +1,6 @@
-﻿using Store.Application.Dtos.Product;
-using Store.Domain.Entities;
+﻿using Store.Application.ModelsDto.Product;
 
-namespace Store.Application.Dtos.Order;
+namespace Store.Application.ModelsDto.Order;
 
 public class CreateOrderDto
 {

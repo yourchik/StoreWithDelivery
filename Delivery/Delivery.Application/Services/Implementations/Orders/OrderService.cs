@@ -16,17 +16,17 @@ public class OrderService : IOrderService
         _logger = logger;
     }
     
-    public async  Task UpdateOrderStatus(Order order, OrderStatus newStatus)
+    public async  Task UpdateOrderStatus(OrderMessage orderMessage, OrderStatus newStatus)
     {
-        if (order.Status is OrderStatus.Cancelled or OrderStatus.Delivered)
+        if (orderMessage.Status is OrderStatus.Cancelled or OrderStatus.Delivered)
         {
-            _logger.LogInformation("Order {orderId} was cancelled or already delivered", order.Id);
+            _logger.LogInformation("Order {orderId} was cancelled or already delivered", orderMessage.Id);
             return;
         }
         
-        order.Status = newStatus;
-        _logger.LogInformation("Order status {orderStatus} was updated", order.Status);
-        var orderStatusMessage = new OrderStatusMessage { OrderId = order.Id, Status = order.Status };
+        orderMessage.Status = newStatus;
+        _logger.LogInformation("Order status {orderStatus} was updated", orderMessage.Status);
+        var orderStatusMessage = new OrderStatusMessage { OrderId = orderMessage.Id, Status = orderMessage.Status };
         await _storeService.SendUpdateStatusOrderAsync(orderStatusMessage);
     }
 }
