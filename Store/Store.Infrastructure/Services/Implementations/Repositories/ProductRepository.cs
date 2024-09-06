@@ -46,5 +46,16 @@ public class ProductRepository : IProductRepository
         await _dbContext.SaveChangesAsync();
         return (true, string.Empty);
     }
+
+    public async Task<(bool IsSuccess, string ErrorMessage)> ReductionAmountUpdate(Guid id, int reductionAmount)
+    {
+        var product = await _dbContext.Products.FindAsync(id);
+        if (product == null)
+            return (false, $"Product with ID {id} not found.");
+        product.Amount -= reductionAmount;
+        _dbContext.Products.Update(product);
+        await _dbContext.SaveChangesAsync();
+        return (true, string.Empty);
+    }
 }
 
