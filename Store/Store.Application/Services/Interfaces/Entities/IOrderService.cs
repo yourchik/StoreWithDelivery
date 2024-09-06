@@ -1,4 +1,4 @@
-using Store.Application.Dtos.OrderDtos;
+using Store.Application.ModelsDto.Order;
 using Store.Application.Services.Implementations.Results;
 using Store.Application.Services.Interfaces.Results;
 using Store.Domain.Entities;

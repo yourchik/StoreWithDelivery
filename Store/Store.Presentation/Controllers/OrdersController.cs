@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Store.Application.Dtos.OrderDtos;
+using Store.Application.ModelsDto.Order;
 using Store.Application.Services.Interfaces.Entities;
 using Store.Domain.Entities;
 using Store.Domain.Enums;
@@ -59,7 +59,7 @@ public class OrdersController : ControllerBase
         return Ok(order.Value);
     }
     
-    [HttpDelete("CancelOrder/{id}")]
+    [HttpPost("CancelOrder/{id}")]
     public async Task<IActionResult> CancelOrder(Guid id)
     {
         var order = await _orderService.CancelOrderAsync(id);

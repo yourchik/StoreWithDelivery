@@ -3,6 +3,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
+using Store.Application.ModelsDto.Order;
 using Store.Domain.Entities;
 using Store.Infrastructure.Services.Interfaces.RabbitMQ;
 using Store.Infrastructure.Settings;
@@ -32,7 +33,7 @@ public class RabbitMqProducerService : IRabbitMqProducerService
         _channel.QueueDeclare(queue: _rabbitMqSettings.QueueProduce, durable: true, exclusive: false, autoDelete: false, arguments: null);
     }
 
-    public Task OrderCreatedAsync(Order order)
+    public Task OrderCreatedAsync(OrderMessage order)
     {
         var message = JsonSerializer.Serialize(order);
         var body = Encoding.UTF8.GetBytes(message);

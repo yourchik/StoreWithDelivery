@@ -51,7 +51,7 @@ public class RabbitMqConsumerService : BackgroundService, IRabbitMqConsumerServi
         {
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
-            var order = JsonSerializer.Deserialize<Order>(message);
+            var order = JsonSerializer.Deserialize<OrderMessage>(message);
             _logger.LogInformation("Consumed message: {message}", message);
             if (order == null)
                 return;

@@ -1,4 +1,4 @@
-﻿namespace Store.Application.Dtos.Product;
+﻿namespace Store.Application.ModelsDto.Product;
 
 public class ProductInOrderDto
 {

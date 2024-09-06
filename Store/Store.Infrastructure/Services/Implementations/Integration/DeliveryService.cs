@@ -1,4 +1,5 @@
-﻿using Store.Application.Services.Interfaces.Integration;
+﻿using Store.Application.ModelsDto.Order;
+using Store.Application.Services.Interfaces.Integration;
 using Store.Domain.Entities;
 using Store.Infrastructure.Services.Interfaces.RabbitMQ;
 
@@ -13,7 +14,7 @@ public class DeliveryService : IDeliveryService
         _rabbitMqProducer = kafkaProducerService;
     }
 
-    public async Task SendOrderToDeliveryAsync(Order order)
+    public async Task SendOrderToDeliveryAsync(OrderMessage order)
     { 
         await _rabbitMqProducer.OrderCreatedAsync(order);
     }

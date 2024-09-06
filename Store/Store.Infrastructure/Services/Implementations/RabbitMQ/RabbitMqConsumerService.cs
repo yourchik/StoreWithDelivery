@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Store.Application.Dtos.OrderDtos;
+using Store.Application.ModelsDto.Order;
 using Store.Domain.Repositories.Interfaces;
 using Store.Infrastructure.Services.Interfaces.RabbitMQ;
 using Store.Infrastructure.Settings;

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Store.Application.Dtos.ProductDtos;
+using Store.Application.ModelsDto.Product;
 using Store.Application.Services.Interfaces.Entities;
 using Store.Domain.Entities;
 using Store.Domain.Enums;
