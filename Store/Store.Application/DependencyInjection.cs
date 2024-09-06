@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Store.Application.Middleware;
 using Store.Application.Services.Implementations.Entities;
+using Store.Application.Services.Interfaces;
 using Store.Application.Services.Interfaces.Entities;
 using Store.Application.Settings;
 
@@ -18,7 +19,9 @@ public static class DependencyInjection
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddTransient<IAuthService, AuthService>();
+        services.AddTransient<IUserService, UserService>();
         services.AddSingleton<ExceptionHandlerMapping>();
+        services.AddHttpContextAccessor();
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -6,5 +6,4 @@ public class CreateOrderDto
 {
     public string Address { get; set; }
     public List<Guid> ProductsGuid { get; set; }
-    public OrderStatus Status { get; set; }
 }
