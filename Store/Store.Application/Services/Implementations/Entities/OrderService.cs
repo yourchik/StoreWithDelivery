@@ -1,11 +1,12 @@
-using Store.Application.Dtos.Order;
+using Store.Application.Dtos.OrderDtos;
 using Store.Application.Services.Factories;
 using Store.Application.Services.Implementations.Results;
 using Store.Application.Services.Interfaces.Entities;
 using Store.Application.Services.Interfaces.Integration;
 using Store.Application.Services.Interfaces.Results;
 using Store.Domain.Entities;
-using Store.Domain.Interfaces;
+using Store.Domain.Repositories.Interfaces;
+using Store.Domain.Repositories.Utilities;
 
 namespace Store.Application.Services.Implementations.Entities;
 
@@ -16,9 +17,9 @@ public class OrderService(
     IDeliveryService deliveryService)
     : IOrderService
 {
-    public async Task<EntityResult<IEnumerable<Order>>> GetOrdersAsync()
+    public async Task<EntityResult<IEnumerable<Order>>> GetOrdersByFilterAsync(BaseFilter<Order> filter, int page, int pageSize)
     {
-        var (orders, isSuccess, errorMessage) = await orderRepository.GetAllAsync();
+        var (orders, isSuccess, errorMessage) = await orderRepository.GetByFilterAsync(filter, page, pageSize);
         if (!isSuccess)
             return EntityResult<IEnumerable<Order>>.Failure(errorMessage);
 
@@ -38,9 +39,8 @@ public class OrderService(
     {
         
         var productResults = await orderDto.Products
-            .Select(p => p.Id)
             .ToAsyncEnumerable()
-            .SelectAwait(async id => await productService.GetProductAsync(id))
+            .SelectAwait(async product => await productService.GetProductAsync(product.Id))
             .ToListAsync(); 
         var errors = productResults
             .Where(result => !result.IsSuccess)

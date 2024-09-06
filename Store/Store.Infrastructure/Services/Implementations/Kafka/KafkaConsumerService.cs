@@ -4,8 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Store.Application.Dtos.Order;
-using Store.Domain.Interfaces;
+using Store.Application.Dtos.OrderDtos;
+using Store.Domain.Repositories.Interfaces;
 using Store.Infrastructure.Services.Interfaces.Kafka;
 using Store.Infrastructure.Settings;
 
