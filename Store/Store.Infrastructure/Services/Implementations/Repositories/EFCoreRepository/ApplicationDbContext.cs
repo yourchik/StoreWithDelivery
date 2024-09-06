@@ -6,15 +6,13 @@ using Store.Domain.Enums;
 
 namespace Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository
 {
-    public class ApplicationDbContext : IdentityDbContext<User, Role, Guid>
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : IdentityDbContext<User, Role, Guid>(options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
-
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
+        
+        public DbSet<ProductsCategory> ProductsCategory { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,15 +28,36 @@ namespace Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepos
             modelBuilder.Entity<Order>()
                 .HasMany(o => o.Products)
                 .WithMany()
-                .UsingEntity(j => j.ToTable("OrderProductsManyToMany"));
-            
+                .UsingEntity<Dictionary<string, object>>(
+                    "OrderProductsManyToMany",
+                    j => j.HasOne<Product>()
+                        .WithMany()
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne<Order>()
+                        .WithMany()
+                        .OnDelete(DeleteBehavior.Cascade));
+
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.User)
                 .WithMany(u => u.Orders)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<Product>()
+                .HasMany(o => o.Categories)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                "ProductProductsCategoryManyToMany",
+                j => j.HasOne<ProductsCategory>()
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Product>()
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Cascade));
+            
             
             modelBuilder.Entity<Product>().HasKey(p => p.Id);
-            
+            modelBuilder.Entity<ProductsCategory>().HasKey(o => o.Id);
+            modelBuilder.Entity<Order>().HasKey(o => o.Id);
         }
         
         private static void ConfigureIdentityTables(ModelBuilder modelBuilder)

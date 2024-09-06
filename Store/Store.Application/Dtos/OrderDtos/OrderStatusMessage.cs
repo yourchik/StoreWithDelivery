@@ -1,6 +1,6 @@
 ﻿using Store.Domain.Entities;
 
-namespace Store.Application.Dtos.Order;
+namespace Store.Application.Dtos.OrderDtos;
 
 public class OrderStatusMessage
 {

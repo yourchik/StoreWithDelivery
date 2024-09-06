@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Store.Application.Dtos.Product;
+using Store.Application.Dtos.ProductDtos;
 using Store.Application.Services.Interfaces.Entities;
+using Store.Domain.Entities;
 using Store.Domain.Enums;
+using Store.Domain.Repositories.Utilities;
 
 namespace Store.Presentation.Controllers;
 
@@ -18,10 +20,10 @@ public class ProductsController : ControllerBase
         _productService = productService;
     }
 
-    [HttpGet("GetProducts")]
-    public async Task<IActionResult> GetProducts()
+    [HttpGet("GetProductsByFilter")]
+    public async Task<IActionResult> GetProductsByFilter(BaseFilter<Product> filter, int page, int pageSize)
     {
-        var products = await _productService.GetProductsAsync();
+        var products = await _productService.GetProductsByFilterAsync(filter, page, pageSize);
         if (!products.IsSuccess)
             return StatusCode(StatusCodes.Status500InternalServerError, products.Errors);
         return Ok(products.Value);

@@ -1,6 +1,6 @@
 ﻿using Store.Domain.Entities;
 
-namespace Store.Domain.Interfaces;
+namespace Store.Domain.Repositories.Interfaces;
 
 public interface IOrderRepository : IBaseRepository<Order>
 {

@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Store.Application.Dtos.Auth;
+using Store.Application.Dtos.AuthDtos;
 using Store.Application.Services.Adapters;
 using Store.Application.Services.Factories;
 using Store.Application.Services.Implementations.Results;

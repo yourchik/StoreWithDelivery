@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Store.Application.Dtos.Order;
+using Store.Application.Dtos.OrderDtos;
 using Store.Application.Services.Interfaces.Entities;
+using Store.Domain.Entities;
 using Store.Domain.Enums;
+using Store.Domain.Repositories.Utilities;
 
 namespace Store.Presentation.Controllers;
 
@@ -18,14 +20,15 @@ public class OrdersController : ControllerBase
         _orderService = orderService;
     }
 
-    [HttpGet("GetOrders")]
-    public async Task<IActionResult> GetOrders()
+    [HttpGet("GetOrdersByFilter")]
+    public async Task<IActionResult> GetOrdersByFilter(BaseFilter<Order> filter, int page, int pageSize)
     {
-        var orders = await _orderService.GetOrdersAsync();
+        var orders = await _orderService.GetOrdersByFilterAsync(filter, page, pageSize);
         if(!orders.IsSuccess)
             return StatusCode(StatusCodes.Status500InternalServerError, orders.Errors);
         return Ok(orders.Value);
     }
+    
 
     [HttpGet("GetOrder/{id}")]
     public async Task<IActionResult> GetOrder(Guid id)

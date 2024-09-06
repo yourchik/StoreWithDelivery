@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Store.Application.Dtos.Auth;
+using Store.Application.Dtos.AuthDtos;
 using Store.Application.Services.Interfaces.Entities;
 
 namespace Store.Presentation.Controllers;

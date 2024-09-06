@@ -1,4 +1,4 @@
-﻿namespace Store.Application.Dtos.Auth;
+﻿namespace Store.Application.Dtos.AuthDtos;
 
 public class UserDto
 {
