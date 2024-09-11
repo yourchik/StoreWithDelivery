@@ -18,9 +18,10 @@ public static class DependencyInjection
         services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
         services.AddScoped<IOrderService, OrderService>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IBasketService, BasketService>();
+        services.AddScoped<IProductsCategoryService, ProductsCategoryService>();
         services.AddTransient<IAuthService, AuthService>();
         services.AddTransient<IUserService, UserService>();
-        services.AddTransient<IProductsCategoryService, ProductsCategoryService>();
         services.AddSingleton<ExceptionHandlerMapping>();
         services.AddHttpContextAccessor();
         services.AddAuthentication(options =>

@@ -38,7 +38,7 @@ public class ProductsCategoryService(IProductsCategoryRepository productsCategor
             Id = Guid.NewGuid(),
             Name = productProductDto.Name,
         };
-        var (isSuccess, errorMessage) = await productsCategoryRepository.AddAsync(productsCategory);
+        var (isSuccess, errorMessage) = await productsCategoryRepository.CreateAsync(productsCategory);
         if (!isSuccess)
             return EntityResult<ProductsCategory>.Failure(errorMessage);
         

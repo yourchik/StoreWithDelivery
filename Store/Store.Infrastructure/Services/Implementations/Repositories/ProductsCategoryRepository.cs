@@ -1,4 +1,4 @@
-﻿using Store.Application.Services.Interfaces.Entities;
+using Store.Application.Services.Interfaces.Entities;
 using Store.Domain.Entities;
 using Store.Domain.Repositories.Interfaces;
 using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;

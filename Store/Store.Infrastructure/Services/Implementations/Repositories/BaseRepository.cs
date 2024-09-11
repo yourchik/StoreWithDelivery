@@ -1,4 +1,5 @@
-﻿using Store.Domain.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Store.Domain.Entities;
 using Store.Domain.Repositories.Interfaces;
 using Store.Domain.Repositories.Utilities;
 using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
@@ -16,24 +17,24 @@ public abstract class BaseRepository<T>(ApplicationDbContext dbContext)
     {
         var entitiesQueryable = DbContext.Set<T>().AsQueryable();
         var entitiesByFilter = filter.ApplyFilter(entitiesQueryable);
-        var pagedOrders = await PagedList<T>.CreateAsync(entitiesByFilter, page, pageSize);
+        var paged = await PagedList<T>.CreateAsync(entitiesByFilter, page, pageSize);
         
-        if (pagedOrders.Items.Count == 0)
-            return (pagedOrders.Items, false, $"No {nameof(T)} found"); 
+        if (paged.Items.Count == 0)
+            return (paged.Items, false, $"No {nameof(T)} found"); 
         
-        return (pagedOrders.Items, true, string.Empty);
+        return (paged.Items, true, string.Empty);
     }
 
-    public virtual async Task<(T? Entity, bool IsSuccess, string ErrorMessage)> GetByIdAsync(Guid id)
+    public virtual async Task<(T Entity, bool IsSuccess, string ErrorMessage)> GetByIdAsync(Guid id)
     {
         var entity = await DbContext.Set<T>().FindAsync(id);
         if (entity == null)
-            return (null, false, $"{nameof(T)} with ID {id} not found.");
+            return (default!, false, $"{nameof(T)} with ID {id} not found.");
 
         return (entity, true, string.Empty);
     }
 
-    public virtual async Task<(bool IsSuccess, string ErrorMessage)> AddAsync(T entity)
+    public virtual async Task<(bool IsSuccess, string ErrorMessage)> CreateAsync(T entity)
     { 
         await DbContext.Set<T>().AddAsync(entity);
         await DbContext.SaveChangesAsync();
@@ -49,5 +50,15 @@ public abstract class BaseRepository<T>(ApplicationDbContext dbContext)
         DbContext.Set<T>().Remove(entity);
         await DbContext.SaveChangesAsync();
         return (true, string.Empty);
+    }
+
+    public async Task<(IEnumerable<T> Entities, bool IsSuccess, string ErrorMessage)> GetAllAsync()
+    {
+        var entities = await DbContext.Set<T>().ToListAsync();
+        
+        if (entities.Count == 0)
+            return (entities, false, $"No {nameof(T)} found"); 
+        
+        return (entities, true, string.Empty);
     }
 }
