@@ -27,6 +27,7 @@ public static class DependencyInjection
         services.AddTransient<DataInitializer>();
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IProductsCategoryRepository, ProductsCategoryRepository>();
         services.AddScoped<IRabbitMqProducerService, RabbitMqProducerService>();
         services.AddHostedService<RabbitMqConsumerService>();
         services.AddDbContext<ApplicationDbContext>(options =>
