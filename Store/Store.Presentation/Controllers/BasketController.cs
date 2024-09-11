@@ -10,8 +10,8 @@ namespace Store.Presentation.Controllers;
 [Route("api/[controller]")]
 public class BasketController(IBasketService basketService) : ControllerBase
 {
-    [HttpPost("AddProductToBasket")]
-    public async Task<IActionResult> AddProductToBasket(Guid id)
+    [HttpPost("products/{id:guid}")]
+    public async Task<IActionResult> AddProductToBasketAsync(Guid id)
     {
         var basket = await basketService.AddProduct(id);
         if (!basket.IsSuccess)
@@ -20,8 +20,8 @@ public class BasketController(IBasketService basketService) : ControllerBase
         return Ok(basket.Value);
     }
     
-    [HttpPost("DeleteProductToBasket")]
-    public async Task<IActionResult> DeleteProductToBasket(Guid id)
+    [HttpDelete("products/{id:guid}")]
+    public async Task<IActionResult> DeleteProductToBasketAsync(Guid id)
     {
         var basket = await basketService.AddProduct(id);
         if (!basket.IsSuccess)
@@ -30,8 +30,8 @@ public class BasketController(IBasketService basketService) : ControllerBase
         return Ok(basket.Value);
     }
 
-    [HttpGet("GetBasketOrCreate")]
-    public async Task<IActionResult> GetOrCreateBasket()
+    [HttpGet]
+    public async Task<IActionResult> GetOrCreateBasketAsync()
     {
         var basket = await basketService.GetOrCreate();
         if (!basket.IsSuccess)
@@ -40,8 +40,8 @@ public class BasketController(IBasketService basketService) : ControllerBase
         return Ok(basket.Value);
     }
     
-    [HttpGet("ClearBasket")]
-    public async Task<IActionResult> ClearBasket()
+    [HttpDelete]
+    public async Task<IActionResult> ClearBasketAsync()
     {
         var basket = await basketService.ClearBasket();
         if (!basket.IsSuccess)

@@ -20,8 +20,8 @@ public class OrdersController : ControllerBase
         _orderService = orderService;
     }
 
-    [HttpGet("GetOrdersByFilter")]
-    public async Task<IActionResult> GetOrdersByFilter(BaseFilter<Order> filter, int page, int pageSize)
+    [HttpGet]
+    public async Task<IActionResult> GetOrdersByFilterAsync(BaseFilter<Order> filter, int page, int pageSize)
     {
         var orders = await _orderService.GetOrdersByFilterAsync(filter, page, pageSize);
         if(!orders.IsSuccess)
@@ -30,8 +30,8 @@ public class OrdersController : ControllerBase
     }
     
 
-    [HttpGet("GetOrder/{id}")]
-    public async Task<IActionResult> GetOrder(Guid id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetOrderAsync(Guid id)
     {
         var order = await _orderService.GetOrderAsync(id);
         if (!order.IsSuccess)
@@ -40,8 +40,8 @@ public class OrdersController : ControllerBase
         
     }
     
-    [HttpGet("GetOrderStatus/{id}")]
-    public async Task<IActionResult> GetOrderStatus(Guid id)
+    [HttpGet("{id:guid}/status")]
+    public async Task<IActionResult> GetOrderStatusAsync(Guid id)
     {
         var orders = await _orderService.GetOrderStatusAsync(id);
         if(!orders.IsSuccess)
@@ -49,8 +49,8 @@ public class OrdersController : ControllerBase
         return Ok(orders.Value);
     }
     
-    [HttpPost("CreateOrder")]
-    public async Task<IActionResult> CreateOrder([FromBody]CreateOrderDto orderDto)
+    [HttpPost]
+    public async Task<IActionResult> CreateOrderAsync([FromBody]CreateOrderDto orderDto)
     {
         var order = await  _orderService.CreateOrderAsync(orderDto);
         if (!order.IsSuccess)
@@ -58,8 +58,8 @@ public class OrdersController : ControllerBase
         return Ok(order.Value);
     }
     
-    [HttpPost("CancelOrder/{id}")]
-    public async Task<IActionResult> CancelOrder(Guid id)
+    [HttpPost("{id:guid}")]
+    public async Task<IActionResult> CancelOrderAsync(Guid id)
     {
         var order = await _orderService.CancelOrderAsync(id);
         if (!order.IsSuccess)
