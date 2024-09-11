@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddScoped<IProductService, ProductService>();
         services.AddTransient<IAuthService, AuthService>();
         services.AddTransient<IUserService, UserService>();
+        services.AddTransient<IProductsCategoryService, ProductsCategoryService>();
         services.AddSingleton<ExceptionHandlerMapping>();
         services.AddHttpContextAccessor();
         services.AddAuthentication(options =>
