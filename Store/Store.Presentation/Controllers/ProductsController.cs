@@ -20,8 +20,8 @@ public class ProductsController : ControllerBase
         _productService = productService;
     }
 
-    [HttpGet("GetProductsByFilter")]
-    public async Task<IActionResult> GetProductsByFilter(BaseFilter<Product> filter, int page, int pageSize)
+    [HttpGet]
+    public async Task<IActionResult> GetProductsByFilterAsync(BaseFilter<Product> filter, int page, int pageSize)
     {
         var products = await _productService.GetProductsByFilterAsync(filter, page, pageSize);
         if (!products.IsSuccess)
@@ -29,8 +29,8 @@ public class ProductsController : ControllerBase
         return Ok(products.Value);
     }
 
-    [HttpGet("GetProduct/{id}")]
-    public async Task<IActionResult> GetProduct(Guid id)
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetProductAsync(Guid id)
     {
         var product = await _productService.GetProductAsync(id);
         if (!product.IsSuccess)
@@ -38,7 +38,7 @@ public class ProductsController : ControllerBase
         return Ok(product.Value);
     }
 
-    [HttpPost("CreateProduct")]
+    [HttpPost]
     public async Task<IActionResult> CreateProductAsync([FromBody]CreateProductDto createProduct)
     {
         var product = await _productService.CreateProductAsync(createProduct);
@@ -47,8 +47,8 @@ public class ProductsController : ControllerBase
         return Ok(product.Value);
     }
 
-    [HttpDelete("DeleteProduct/{id}")]
-    public async Task<IActionResult> DeleteProduct(Guid id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteProductAsync(Guid id)
     {
         var product = await _productService.DeleteProductAsync(id);
         if (!product.IsSuccess)
