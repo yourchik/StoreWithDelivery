@@ -20,6 +20,4 @@ public static class ResultFactory
 
         return new FailureResult(result.Errors);
     }
-    
-    
 }

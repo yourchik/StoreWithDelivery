@@ -62,7 +62,7 @@ public class ProductService(IProductRepository productRepository,
             Categories = productsCategories
         };
         
-        var (isSuccess, errorMessage) = await productRepository.AddAsync(product);
+        var (isSuccess, errorMessage) = await productRepository.CreateAsync(product);
         if (!isSuccess)
             return EntityResult<Product>.Failure(errorMessage);
         

@@ -8,7 +8,7 @@ public class EntityResult<T> : IResult
 
     public bool IsSuccess { get; private set; }
     
-    public T? Value { get; private set; }
+    public T Value { get; private set; }
     
     public IEnumerable<string> Errors => _errors;
     
@@ -18,13 +18,13 @@ public class EntityResult<T> : IResult
     
     public static EntityResult<T> Failure(params string[] errors)
     {
-        var result = new EntityResult<T>(default, false);
+        var result = new EntityResult<T>(default!, false);
         if (errors.Length > 0)
             result._errors.AddRange(errors);
         return result;
     }
 
-    private EntityResult(T? value, bool isSuccess)
+    private EntityResult(T value, bool isSuccess)
     {
         Value = value;
         IsSuccess = isSuccess;

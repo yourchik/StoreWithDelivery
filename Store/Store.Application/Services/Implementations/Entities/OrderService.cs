@@ -37,7 +37,6 @@ public class OrderService(
 
     public async Task<EntityResult<Order>> CreateOrderAsync(CreateOrderDto orderDto)
     {
-        
         var productResults = await orderDto.Products
             .ToAsyncEnumerable()
             .SelectAwait(async product => await productService.GetProductAsync(product.Id))
@@ -70,7 +69,6 @@ public class OrderService(
             await productService.ReductionAmountUpdate(productInOrder.Id, productInOrder.Amount);
         }
         
-
         var user = await userService.GetCurrentUserAsync();
         var order = new Order
         {
@@ -80,7 +78,9 @@ public class OrderService(
             User = user
         };
         
-        await orderRepository.AddAsync(order);
+        var (isSuccess, errorMessage) = await orderRepository.CreateAsync(order);
+        if (!isSuccess)
+            return EntityResult<Order>.Failure(errorMessage);
         
         await deliveryService.SendOrderToDeliveryAsync(new OrderMessage
         {
@@ -89,6 +89,7 @@ public class OrderService(
             Products = order.Products,
             Status = order.Status
         });
+        
         return EntityResult<Order>.Success(order);
     }
 

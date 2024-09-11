@@ -2,6 +2,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Store.Application.Services.Implementations.Entities;
+using Store.Application.Services.Interfaces.Entities;
 using Store.Application.Services.Interfaces.Integration;
 using Store.Application.Settings;
 using Store.Domain.Entities;
@@ -28,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IProductsCategoryRepository, ProductsCategoryRepository>();
+        services.AddScoped<IBasketRepository, BasketRepository>();
         services.AddScoped<IRabbitMqProducerService, RabbitMqProducerService>();
         services.AddHostedService<RabbitMqConsumerService>();
         services.AddDbContext<ApplicationDbContext>(options =>
