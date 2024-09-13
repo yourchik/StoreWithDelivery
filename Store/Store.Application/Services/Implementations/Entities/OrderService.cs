@@ -1,6 +1,7 @@
 using Store.Application.ModelsDto.Order;
 using Store.Application.Services.Factories;
 using Store.Application.Services.Implementations.Results;
+using Store.Application.Services.Interfaces.AuditManagement;
 using Store.Application.Services.Interfaces.Entities;
 using Store.Application.Services.Interfaces.Integration;
 using Store.Application.Services.Interfaces.Results;
@@ -14,7 +15,8 @@ public class OrderService(
     IOrderRepository orderRepository,
         IProductService productService,
     IUserService userService,
-    IDeliveryService deliveryService)
+    IDeliveryService deliveryService,
+    IAuditService auditService)
     : IOrderService
 {
     public async Task<EntityResult<IEnumerable<Order>>> GetOrdersByFilterAsync(BaseFilter<Order> filter, int page, int pageSize)
@@ -32,7 +34,7 @@ public class OrderService(
         if (!isSuccess && !string.IsNullOrEmpty(errorMessage))
             return EntityResult<Order>.Failure(errorMessage);
 
-        return order != null ? EntityResult<Order>.Success(order) : EntityResult<Order>.Failure("Order not found.");
+        return EntityResult<Order>.Success(order);
     }
 
     public async Task<EntityResult<Order>> CreateOrderAsync(CreateOrderDto orderDto)
@@ -41,6 +43,7 @@ public class OrderService(
             .ToAsyncEnumerable()
             .SelectAwait(async product => await productService.GetProductAsync(product.Id))
             .ToListAsync(); 
+        
         var errors = productResults
             .Where(result => !result.IsSuccess)
             .SelectMany(result => result.Errors)
@@ -81,7 +84,8 @@ public class OrderService(
         var (isSuccess, errorMessage) = await orderRepository.CreateAsync(order);
         if (!isSuccess)
             return EntityResult<Order>.Failure(errorMessage);
-        
+
+        await auditService.AuditChange(nameof(order), order.Id, user.Id);
         await deliveryService.SendOrderToDeliveryAsync(new OrderMessage
         {
             OrderId = order.Id,
@@ -95,17 +99,32 @@ public class OrderService(
 
     public async Task<IResult> UpdateOrderStatusAsync(Guid orderId, OrderStatus status)
     {
+        var order = await orderRepository.GetByIdAsync(orderId);
+        if (!order.IsSuccess)
+            return ResultFactory.CreateResult(order.IsSuccess, order.ErrorMessage);
+        
         var (isSuccess, errorMessage) = await orderRepository.UpdateStatusAsync(orderId, status);
         if (!isSuccess)
             return ResultFactory.CreateResult(isSuccess, errorMessage);
+        
+        await auditService.AuditChange(nameof(order.Entity), order.Entity.Id, order.Entity.User.Id,
+            nameof(order.Entity.Status), order.Entity.Status.ToString(), status.ToString());
         return ResultFactory.CreateResult(isSuccess);
     }
 
     public async Task<IResult> CancelOrderAsync(Guid id)
     {
+        var order = await orderRepository.GetByIdAsync(id);
+        if (!order.IsSuccess)
+            return ResultFactory.CreateResult(order.IsSuccess, order.ErrorMessage);
+        
         var (isSuccess, errorMessage) = await orderRepository.UpdateStatusAsync(id, OrderStatus.Cancelled);
         if (!isSuccess)
             return ResultFactory.CreateResult(isSuccess, errorMessage);
+        
+        await auditService.AuditChange(nameof(order.Entity), order.Entity.Id, order.Entity.User.Id,
+            nameof(order.Entity.Status), order.Entity.Status.ToString(), OrderStatus.Cancelled.ToString());
+        
         return ResultFactory.CreateResult(isSuccess);
     }
 
@@ -116,7 +135,6 @@ public class OrderService(
         if (!isSuccess && !string.IsNullOrEmpty(errorMessage))
             return EntityResult<OrderStatus>.Failure(errorMessage);
 
-        return order != null ? EntityResult<OrderStatus>.Success(order.Status) 
-            : EntityResult<OrderStatus>.Failure("Order not found.");
+        return EntityResult<OrderStatus>.Success(order.Status);
     }
 }

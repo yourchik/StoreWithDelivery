@@ -16,7 +16,6 @@ public class AdminAccessMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         var user = context.User;
-        
         if (user.Identity is { IsAuthenticated: true } && user.IsInRole(nameof(UserRole.Admin)))
         {
             var claims = Enum.GetValues<UserRole>().Select(role => new Claim(ClaimTypes.Role, role.ToString())).ToList();

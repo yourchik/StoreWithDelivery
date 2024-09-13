@@ -88,6 +88,11 @@ namespace Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepos
             {
                 entity.HasKey(b => b.Id);
             });
+            
+            modelBuilder.Entity<Audit>(entity =>
+            {
+                entity.HasKey(b => b.Id);
+            });
         }
         
         private static void ConfigureIdentityTables(ModelBuilder modelBuilder)

@@ -31,6 +31,7 @@ public static class DependencyInjection
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IProductsCategoryRepository, ProductsCategoryRepository>();
         services.AddScoped<IBasketRepository, BasketRepository>();
+        services.AddScoped<IAuditRepository, AuditRepository>();
         services.AddScoped<IRabbitMqProducerService, RabbitMqProducerService>();
         services.AddHostedService<RabbitMqConsumerService>();
         services.AddDbContext<ApplicationDbContext>(options =>
