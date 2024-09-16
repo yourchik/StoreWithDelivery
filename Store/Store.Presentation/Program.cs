@@ -10,9 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Configuration.AddJsonFile("appsettings.json",
-    optional: false, reloadOnChange: true);
-if (builder.Environment.IsDevelopment())
-    builder.Configuration.AddJsonFile("appsettings.Development.json", optional: true);
+    optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json",
+        optional: true, reloadOnChange: true);
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddSwaggerDocumentation();
