@@ -3,6 +3,7 @@ using Delivery.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 var host = Host.CreateDefaultBuilder()
     .ConfigureAppConfiguration((context, config) =>
@@ -12,6 +13,12 @@ var host = Host.CreateDefaultBuilder()
             .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json",
                 optional: true, reloadOnChange: true);
         config.AddEnvironmentVariables();
+    })
+    .UseSerilog((context, services, configuration) =>
+    {
+        configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .Enrich.FromLogContext();
     })
     .ConfigureServices((context, services) =>
     {
@@ -25,4 +32,16 @@ var host = Host.CreateDefaultBuilder()
     })
     .Build();
 
-await host.RunAsync();
+try
+{
+    Log.Information("Starting Delivery host");
+    await host.RunAsync();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Host Delivery terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

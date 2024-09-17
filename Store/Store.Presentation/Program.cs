@@ -1,3 +1,5 @@
+using Serilog;
+using Serilog.Sinks.Network;
 using Store.Application;
 using Store.Application.Middleware;
 using Store.Infrastructure;
@@ -14,6 +16,9 @@ builder.Configuration.AddJsonFile("appsettings.json",
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json",
         optional: true, reloadOnChange: true);
 builder.Configuration.AddEnvironmentVariables();
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services));
 
 builder.Services.AddSwaggerDocumentation();
 
@@ -39,4 +44,16 @@ app.MapControllers();
 var dataInitializer = app.Services.GetRequiredService<DataInitializer>();
 await dataInitializer.InitializeAsync();
 
-app.Run();
+try
+{
+    Log.Information("Starting Store host");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Host Store terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
