@@ -1,8 +1,8 @@
-﻿using Delivery.Application.ModelsDto.Orders;
+﻿using Contracts.Messages;
 
 namespace Delivery.Infrastructure.Services.Interfaces.RabbitMQ;
 
 public interface IRabbitMqMessageService
 { 
-    Task<IEnumerable<OrderDto>> GetMessagesAsync(CancellationToken cancellationToke);
+    Task<IEnumerable<OrderCreateMessage>> GetMessagesAsync(CancellationToken cancellationToke);
 }

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Store.Application.ModelsDto.Orders;
 using Store.Application.Services.Interfaces.Integration;
 using Store.Application.Settings;
 using Store.Domain.Entities;

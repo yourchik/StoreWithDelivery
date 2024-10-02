@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using Confluent.Kafka;
-using Delivery.Application.ModelsDto.Orders;
+using Contracts.Messages;
 using Delivery.Application.Services.Interfaces.Orders;
 using Delivery.Infrastructure.Services.Interfaces.Kafka;
 using Delivery.Infrastructure.Services.Interfaces.Scheduler;
@@ -46,7 +46,7 @@ public class KafkaConsumerService : BackgroundService, IKafkaConsumerService
             {
                 var consumeResult = _consumer.Consume(stoppingToken);
                 var message = consumeResult.Message.Value;
-                var order = JsonSerializer.Deserialize<OrderDto>(message);
+                var order = JsonSerializer.Deserialize<OrderCreateMessage>(message);
                 _logger.LogInformation("Consumed message: {message}", message);
                 if (order == null)
                     continue;

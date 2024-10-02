@@ -92,13 +92,7 @@ public class OrderService(
             return EntityResult<Order>.Failure(errorMessage);
 
         await auditService.AuditChange(order.GetType().FullName!, order.Id, user.Id);
-        await deliveryService.SendOrderToDeliveryAsync(new OrderMessage
-        {
-            Id = order.Id,
-            Address = order.Address,
-            Status = order.Status
-        });
-        
+        await deliveryService.SendOrderToDeliveryAsync(new OrderCreateMessage(order.Id, order.Address, order.Status));
         transaction.Complete();
         return EntityResult<Order>.Success(order);
     }

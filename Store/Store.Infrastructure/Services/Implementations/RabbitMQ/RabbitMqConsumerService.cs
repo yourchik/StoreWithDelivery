@@ -3,7 +3,6 @@ using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Store.Application.ModelsDto.Orders;
 using Store.Application.Services.Interfaces.Entities;
 using Store.Infrastructure.Settings;
 

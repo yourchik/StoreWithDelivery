@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using Confluent.Kafka;
 using Contracts.Messages;
-using Delivery.Application.ModelsDto.Orders;
 using Delivery.Infrastructure.Services.Interfaces.Kafka;
 using Delivery.Infrastructure.Settings;
 using Microsoft.Extensions.Logging;

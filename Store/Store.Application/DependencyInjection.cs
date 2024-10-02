@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Store.Application.Middleware;
 using Store.Application.Services.Implementations.AuditManagement;
 using Store.Application.Services.Implementations.Entities;
 using Store.Application.Services.Interfaces.AuditManagement;

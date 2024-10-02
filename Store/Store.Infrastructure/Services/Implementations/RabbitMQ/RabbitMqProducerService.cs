@@ -5,7 +5,6 @@ using MassTransit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
-using Store.Application.ModelsDto.Orders;
 using Store.Infrastructure.Settings;
 
 namespace Store.Infrastructure.Services.Implementations.RabbitMQ;
@@ -55,7 +54,7 @@ public class RabbitMqProducerService
         _logger.LogInformation($"Produced message for order {order.OrderId} to queue");
     }
     
-    public Task OrderCreatedAsync(OrderMessage order)
+    public Task OrderCreatedAsync(OrderCreateMessage order)
     {
         using (var connection = _factory.CreateConnection())
         using (var channel = connection.CreateModel())

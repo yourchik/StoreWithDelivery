@@ -1,6 +1,4 @@
 ﻿using Contracts.Enum;
-using Store.Application.ModelsDto.Products;
-using Store.Domain.Entities;
 
 namespace Store.Application.ModelsDto.Orders;
 

@@ -1,6 +1,5 @@
 ﻿using Contracts.Enum;
 using Delivery.Application.Services.Interfaces.Orders;
-using Delivery.Domain.Entities;
 
 namespace Delivery.PresentationApi.Routing;
 

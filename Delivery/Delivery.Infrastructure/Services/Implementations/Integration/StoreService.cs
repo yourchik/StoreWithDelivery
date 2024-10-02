@@ -1,5 +1,4 @@
 ﻿using Contracts.Messages;
-using Delivery.Application.ModelsDto.Orders;
 using Delivery.Application.Services.Interfaces.Integration;
 using Delivery.Infrastructure.Services.Implementations.RabbitMQ;
 

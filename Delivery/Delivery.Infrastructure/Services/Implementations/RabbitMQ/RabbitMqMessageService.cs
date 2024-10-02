@@ -3,8 +3,7 @@
 using System.Text;
 using System.Text.Json;
 using Contracts.Enum;
-using Delivery.Application.ModelsDto.Orders;
-using Delivery.Domain.Entities;
+using Contracts.Messages;
 using Delivery.Infrastructure.Services.Interfaces.RabbitMQ;
 using Delivery.Infrastructure.Settings;
 using Microsoft.Extensions.Logging;
@@ -18,7 +17,7 @@ public class RabbitMqMessageService(
     ILogger<RabbitMqMessageService> logger) 
     : IRabbitMqMessageService
 {
-    public async Task<IEnumerable<OrderDto>> GetMessagesAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<OrderCreateMessage>> GetMessagesAsync(CancellationToken cancellationToken)
     {
         var factory = new ConnectionFactory
         {
@@ -30,7 +29,7 @@ public class RabbitMqMessageService(
         
         using var connection = factory.CreateConnection();
         using var channel = connection.CreateModel();
-        var messages = new List<OrderDto>();
+        var messages = new List<OrderCreateMessage>();
         while (true)
         {
             var result = channel.BasicGet(rabbitMqSettings.Value.QueueOrderCreate, autoAck: false);
@@ -45,7 +44,7 @@ public class RabbitMqMessageService(
                 var message = Encoding.UTF8.GetString(body);
                 using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(message));
                 var orderMessage =
-                    await JsonSerializer.DeserializeAsync<OrderDto>(memoryStream, cancellationToken: cancellationToken);
+                    await JsonSerializer.DeserializeAsync<OrderCreateMessage>(memoryStream, cancellationToken: cancellationToken);
                 if (orderMessage == null)
                 {
                     logger.LogWarning("Received a null or invalid message.");
@@ -53,7 +52,7 @@ public class RabbitMqMessageService(
                     continue;
                 }
 
-                orderMessage.Status = OrderStatus.Accepted;
+                orderMessage = orderMessage with { Status = OrderStatus.Accepted };
                 messages.Add(orderMessage);
                 logger.LogInformation($"Processed order: {orderMessage.Id}");
                 channel.BasicAck(result.DeliveryTag, multiple: false);

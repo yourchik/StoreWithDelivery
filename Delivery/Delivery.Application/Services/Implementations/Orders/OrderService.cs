@@ -1,6 +1,5 @@
 ﻿using Contracts.Enum;
 using Contracts.Messages;
-using Delivery.Application.ModelsDto.Orders;
 using Delivery.Application.Services.Interfaces.Integration;
 using Delivery.Application.Services.Interfaces.Orders;
 using Delivery.Domain.Entities;
@@ -11,9 +10,9 @@ namespace Delivery.Application.Services.Implementations.Orders;
 
 public class OrderService(IStoreService storeService, ILogger<OrderService> logger, IOrderRepository orderRepository) : IOrderService
 {
-    public async Task CreateRangeOrdersAsync(IEnumerable<OrderDto> ordersDto)
+    public async Task CreateRangeOrdersAsync(IEnumerable<OrderCreateMessage> orderCreateMessages)
     {
-        var orders = ordersDto
+        var orders = orderCreateMessages
             .Select(orderDto => new Order { 
                 Id = orderDto.Id,
                 Address = orderDto.Address, 

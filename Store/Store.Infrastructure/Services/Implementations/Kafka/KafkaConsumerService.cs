@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Store.Application.ModelsDto.Orders;
 using Store.Application.Services.Interfaces.Entities;
 using Store.Infrastructure.Services.Interfaces.Kafka;
 using Store.Infrastructure.Settings;
