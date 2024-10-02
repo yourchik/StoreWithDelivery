@@ -1,45 +1,76 @@
 ﻿using System.Text;
 using System.Text.Json;
+using Contracts.Messages;
+using MassTransit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
-using Store.Application.ModelsDto.Order;
-using Store.Domain.Entities;
-using Store.Infrastructure.Services.Interfaces.RabbitMQ;
+using Store.Application.ModelsDto.Orders;
 using Store.Infrastructure.Settings;
 
 namespace Store.Infrastructure.Services.Implementations.RabbitMQ;
 
-public class RabbitMqProducerService : IRabbitMqProducerService
+public class RabbitMqProducerService
 {
     private readonly ILogger<RabbitMqProducerService> _logger;
-    private readonly RabbitMqSettings _rabbitMqSettings;
-    private readonly IModel _channel;
+    private readonly IOptions<RabbitMqSettings> _settings;
+    private readonly ConnectionFactory _factory;
+    private readonly IBus _bus;
 
-    public RabbitMqProducerService(IOptions<RabbitMqSettings> rabbitMqSettings, ILogger<RabbitMqProducerService> logger)
+    public RabbitMqProducerService(
+        ILogger<RabbitMqProducerService> logger,
+        IOptions<RabbitMqSettings> settings,
+        IBus bus)
     {
-        _rabbitMqSettings = rabbitMqSettings.Value;
         _logger = logger;
-
-        var factory = new ConnectionFactory()
+        _settings = settings;
+        _bus = bus;
+        _factory = new ConnectionFactory
         {
-            HostName = _rabbitMqSettings.HostName,
-            Port = _rabbitMqSettings.Port,
-            UserName = _rabbitMqSettings.UserName,
-            Password = _rabbitMqSettings.Password
+            HostName = _settings.Value.HostName,
+            Port = _settings.Value.Port,
+            UserName = _settings.Value.UserName,
+            Password = _settings.Value.Password
         };
-        var connection = factory.CreateConnection();
-        _channel = connection.CreateModel();
-        _channel.QueueDeclare(queue: _rabbitMqSettings.QueueProduce, durable: true, exclusive: false, autoDelete: false, arguments: null);
+        CreateQueue();
     }
 
+    private void CreateQueue()
+    {
+        using var connection = _factory.CreateConnection();
+        using var channel = connection.CreateModel();
+        channel.QueueDeclare(
+            queue: _settings.Value.QueueOrderCreate,
+            durable: true,
+            exclusive: false,
+            autoDelete: false,
+            arguments: null);
+
+        _logger.LogInformation($"Queue {_settings.Value.QueueOrderCreate} created");
+    }
+
+    public async Task OrderCreatedAsync(OrderStatusMessage order)
+    {
+        await _bus.Publish(order);
+        _logger.LogInformation($"Produced message for order {order.OrderId} to queue");
+    }
+    
     public Task OrderCreatedAsync(OrderMessage order)
     {
-        var message = JsonSerializer.Serialize(order);
-        var body = Encoding.UTF8.GetBytes(message);
+        using (var connection = _factory.CreateConnection())
+        using (var channel = connection.CreateModel())
+        {
+            var messageBody = JsonSerializer.Serialize(order);
+            var body = Encoding.UTF8.GetBytes(messageBody);
 
-        _channel.BasicPublish(exchange: "", routingKey: _rabbitMqSettings.QueueProduce, basicProperties: null, body: body);
-        _logger.LogInformation($"Produced message to queue {_rabbitMqSettings.QueueProduce}");
+            channel.BasicPublish(
+                exchange: "",
+                routingKey: _settings.Value.QueueOrderCreate,
+                basicProperties: null,
+                body: body);
+
+            _logger.LogInformation($"Produced message for order {order.Id} to queue");
+        }
 
         return Task.CompletedTask;
     }

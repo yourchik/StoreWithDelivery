@@ -2,10 +2,11 @@
 
 public class RabbitMqSettings
 {
-    public string HostName { get; set; }
-    public string QueueConsume { get; set; }
-    public string QueueProduce { get; set; }
-    public int Port { get; set; }
-    public string UserName { get; set; }
-    public string Password { get; set; }
+    public string HostName { get; init; }
+    public Guid SystemId { get; init; } = Guid.NewGuid();
+    public string QueueOrderUpdate { get; init; }
+    public string QueueOrderCreate { get; init; }
+    public ushort Port { get; init; }
+    public string UserName { get; init; }
+    public string Password { get; init; }
 }

@@ -1,4 +1,4 @@
-﻿using Store.Application.ModelsDto.Product;
+﻿using Store.Application.ModelsDto.Products;
 using Store.Application.Services.Factories;
 using Store.Application.Services.Implementations.Results;
 using Store.Application.Services.Interfaces.Entities;
@@ -12,7 +12,7 @@ namespace Store.Application.Services.Implementations.Entities;
 public class ProductsCategoryService(IProductsCategoryRepository productsCategoryRepository)
     : IProductsCategoryService
 {
-    public async Task<EntityResult<IEnumerable<ProductsCategory>>> GetProductsCategoryByFilterAsync(BaseFilter<ProductsCategory> filter, int page, int pageSize)
+    public async Task<EntityResult<IEnumerable<ProductsCategory>>> GetProductsCategoryAsync(BaseFilter<ProductsCategory> filter, int page, int pageSize)
     {
         var (products, isSuccess, errorMessage) = await productsCategoryRepository.GetByFilterAsync(filter, page, pageSize); 
         if (!isSuccess)
@@ -21,14 +21,14 @@ public class ProductsCategoryService(IProductsCategoryRepository productsCategor
         return EntityResult<IEnumerable<ProductsCategory>>.Success(products);
     }
 
-    public async Task<EntityResult<ProductsCategory>> GetProductsCategoryByFilterAsync(Guid id)
+    public async Task<EntityResult<ProductsCategory>> GetProductsCategoryAsync(Guid id)
     {
         var (product, isSuccess, errorMessage) = await productsCategoryRepository.GetByIdAsync(id);
     
         if (!isSuccess && !string.IsNullOrEmpty(errorMessage))
             return EntityResult<ProductsCategory>.Failure(errorMessage);
         
-        return product != null ? EntityResult<ProductsCategory>.Success(product) : EntityResult<ProductsCategory>.Failure("ProductsCategory not found.");
+        return EntityResult<ProductsCategory>.Success(product);
     }
 
     public async Task<EntityResult<ProductsCategory>> CreateProductsCategoryAsync(CreateProductsCategoryDto productProductDto)

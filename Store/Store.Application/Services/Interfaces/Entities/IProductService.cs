@@ -1,4 +1,4 @@
-using Store.Application.ModelsDto.Product;
+using Store.Application.ModelsDto.Products;
 using Store.Application.Services.Implementations.Results;
 using Store.Application.Services.Interfaces.Results;
 using Store.Domain.Entities;
@@ -12,6 +12,6 @@ public interface IProductService
     Task<EntityResult<Product>> GetProductAsync(Guid id);
     Task<EntityResult<Product>> CreateProductAsync(CreateProductDto createProduct);
     Task<IResult> DeleteProductAsync(Guid id);
-    Task<IResult> ReductionAmountUpdate(Guid id, int reductionAmount);
+    Task<IResult> UpdateAmountAsync(Guid id, int reductionAmount);
 
 }

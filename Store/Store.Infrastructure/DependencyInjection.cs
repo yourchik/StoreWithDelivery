@@ -1,9 +1,10 @@
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Store.Application.Services.Implementations.Entities;
-using Store.Application.Services.Interfaces.Entities;
+using Microsoft.Extensions.Options;
+using Store.Application.ModelsDto.Orders;
 using Store.Application.Services.Interfaces.Integration;
 using Store.Application.Settings;
 using Store.Domain.Entities;
@@ -12,7 +13,6 @@ using Store.Infrastructure.Services.Implementations.Integration;
 using Store.Infrastructure.Services.Implementations.RabbitMQ;
 using Store.Infrastructure.Services.Implementations.Repositories;
 using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
-using Store.Infrastructure.Services.Interfaces.RabbitMQ;
 using Store.Infrastructure.Settings;
 
 namespace Store.Infrastructure;
@@ -32,8 +32,25 @@ public static class DependencyInjection
         services.AddScoped<IProductsCategoryRepository, ProductsCategoryRepository>();
         services.AddScoped<IBasketRepository, BasketRepository>();
         services.AddScoped<IAuditRepository, AuditRepository>();
-        services.AddScoped<IRabbitMqProducerService, RabbitMqProducerService>();
-        services.AddHostedService<RabbitMqConsumerService>();
+        services.AddScoped<RabbitMqProducerService>();
+        services.AddMassTransit(x =>
+        {
+            x.AddConsumer<RabbitMqConsumerService>();
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+                cfg.Host(rabbitMqSettings.HostName, rabbitMqSettings.Port, "/", h =>
+                {
+                    h.Username(rabbitMqSettings.UserName);
+                    h.Password(rabbitMqSettings.Password);
+                });
+                cfg.ReceiveEndpoint(rabbitMqSettings.QueueOrderUpdate, e =>
+                {
+                    e.Consumer<RabbitMqConsumerService>(context);
+                });
+            });
+        });
+
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("Postgres")));
         services.AddIdentity<User, Role>()

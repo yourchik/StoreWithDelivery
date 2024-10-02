@@ -1,10 +1,13 @@
-﻿namespace Store.Domain.Entities;
+﻿using Contracts.Enum;
+
+namespace Store.Domain.Entities;
 
 public class Order : BaseEntity
 {
-    public string Address { get; set; }
-    public User User { get; set; }
-    public IEnumerable<Product> Products { get; set; }
+    public required string Address { get; set; }
+    public required User User { get; set; }
+    public Guid UserId { get; set; }
+    public required IEnumerable<Product> Products { get; set; }
     public OrderStatus Status { get; set; } = OrderStatus.Created;
 }
 

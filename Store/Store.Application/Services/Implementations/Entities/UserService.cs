@@ -1,11 +1,8 @@
 ﻿using System.Security.Claims;
-using System.Security.Principal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Store.Application.Services.Interfaces;
 using Store.Application.Services.Interfaces.Entities;
 using Store.Domain.Entities;
-using Store.Domain.Enums;
 
 namespace Store.Application.Services.Implementations.Entities;
 

@@ -1,4 +1,4 @@
-using Store.Application.ModelsDto.Product;
+using Store.Application.ModelsDto.Products;
 using Store.Application.Services.Factories;
 using Store.Application.Services.Implementations.Results;
 using Store.Application.Services.Interfaces.Entities;
@@ -29,13 +29,13 @@ public class ProductService(IProductRepository productRepository,
         if (!isSuccess && !string.IsNullOrEmpty(errorMessage))
             return EntityResult<Product>.Failure(errorMessage);
         
-        return product != null ? EntityResult<Product>.Success(product) : EntityResult<Product>.Failure("Product not found.");
+        return EntityResult<Product>.Success(product);
     }
     public async Task<EntityResult<Product>> CreateProductAsync(CreateProductDto productProductDto)
     {
         var productResults = (await productProductDto.Categories
             .ToAsyncEnumerable()
-            .SelectAwait(async productGuid => await productsCategoryService.GetProductsCategoryByFilterAsync(productGuid))
+            .SelectAwait(async productGuid => await productsCategoryService.GetProductsCategoryAsync(productGuid))
             .ToListAsync());
         
         var errors = productResults
@@ -57,7 +57,7 @@ public class ProductService(IProductRepository productRepository,
             Name = productProductDto.Name,
             Price = productProductDto.Price,
             Amount = productProductDto.Amount,
-            Composition = productProductDto.Сomposition,
+            Composition = productProductDto.Composition,
             Producer = productProductDto.Producer,
             Categories = productsCategories
         };
@@ -77,9 +77,13 @@ public class ProductService(IProductRepository productRepository,
         return ResultFactory.CreateResult(isSuccess);
     }
 
-    public async Task<IResult> ReductionAmountUpdate(Guid id, int reductionAmount)
+    public async Task<IResult> UpdateAmountAsync(Guid id, int reductionAmount)
     {
-        var (isSuccess, errorMessage) = await productRepository.ReductionAmountUpdate(id, reductionAmount);
+        var product = await productRepository.GetByIdAsync(id);
+        if(!product.IsSuccess)
+            return ResultFactory.CreateResult(product.IsSuccess, product.ErrorMessage);
+        
+        var (isSuccess, errorMessage) = await productRepository.UpdateAmountAsync(product.Entity, reductionAmount);
         if (!isSuccess)
             return ResultFactory.CreateResult(isSuccess, errorMessage);
         

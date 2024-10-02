@@ -18,7 +18,7 @@ public class AuditService(IAuditRepository auditRepository) : IAuditService
             PropertyName = propertyName,
             OldValue = oldValue,
             NewValue = newValue,
-            ChangedAt = DateTime.Now,
+            ChangedAt = DateTime.UtcNow,
             UserId = userId
         };
 

@@ -1,4 +1,5 @@
-﻿using Store.Domain.Entities;
+﻿using Contracts.Enum;
+using Store.Domain.Entities;
 using Store.Domain.Repositories.Utilities;
 
 namespace Store.Infrastructure.Services.Implementations.Repositories.Utilities.Filters;

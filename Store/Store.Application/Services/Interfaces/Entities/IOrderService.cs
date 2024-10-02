@@ -1,4 +1,5 @@
-using Store.Application.ModelsDto.Order;
+using Contracts.Enum;
+using Store.Application.ModelsDto.Orders;
 using Store.Application.Services.Implementations.Results;
 using Store.Application.Services.Interfaces.Results;
 using Store.Domain.Entities;

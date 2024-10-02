@@ -17,7 +17,7 @@ namespace Store.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -125,7 +125,7 @@ namespace Store.Infrastructure.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("OrderProductsManyToMany", b =>
+            modelBuilder.Entity("OrdersProductsManyToMany", b =>
                 {
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
@@ -137,10 +137,10 @@ namespace Store.Infrastructure.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("OrderProductsManyToMany");
+                    b.ToTable("OrdersProductsManyToMany");
                 });
 
-            modelBuilder.Entity("ProductBasketManyToMany", b =>
+            modelBuilder.Entity("ProductsBasketsManyToMany", b =>
                 {
                     b.Property<Guid>("BasketId")
                         .HasColumnType("uuid");
@@ -152,10 +152,10 @@ namespace Store.Infrastructure.Migrations
 
                     b.HasIndex("ProductsId");
 
-                    b.ToTable("ProductBasketManyToMany");
+                    b.ToTable("ProductsBasketsManyToMany");
                 });
 
-            modelBuilder.Entity("ProductProductsCategoryManyToMany", b =>
+            modelBuilder.Entity("ProductsProductsCategoryManyToMany", b =>
                 {
                     b.Property<Guid>("CategoriesId")
                         .HasColumnType("uuid");
@@ -167,7 +167,7 @@ namespace Store.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductProductsCategoryManyToMany");
+                    b.ToTable("ProductsProductsCategoryManyToMany");
                 });
 
             modelBuilder.Entity("Store.Domain.Entities.Audit", b =>
@@ -192,9 +192,6 @@ namespace Store.Infrastructure.Migrations
                     b.Property<string>("OldValue")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("OrderId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("PropertyName")
                         .HasColumnType("text");
 
@@ -203,7 +200,7 @@ namespace Store.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Audit");
+                    b.ToTable("Audits");
                 });
 
             modelBuilder.Entity("Store.Domain.Entities.Basket", b =>
@@ -260,7 +257,6 @@ namespace Store.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<decimal>("Price")
@@ -433,7 +429,7 @@ namespace Store.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OrderProductsManyToMany", b =>
+            modelBuilder.Entity("OrdersProductsManyToMany", b =>
                 {
                     b.HasOne("Store.Domain.Entities.Order", null)
                         .WithMany()
@@ -448,7 +444,7 @@ namespace Store.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProductBasketManyToMany", b =>
+            modelBuilder.Entity("ProductsBasketsManyToMany", b =>
                 {
                     b.HasOne("Store.Domain.Entities.Basket", null)
                         .WithMany()
@@ -463,7 +459,7 @@ namespace Store.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProductProductsCategoryManyToMany", b =>
+            modelBuilder.Entity("ProductsProductsCategoryManyToMany", b =>
                 {
                     b.HasOne("Store.Domain.Entities.ProductsCategory", null)
                         .WithMany()
@@ -492,17 +488,12 @@ namespace Store.Infrastructure.Migrations
             modelBuilder.Entity("Store.Domain.Entities.Order", b =>
                 {
                     b.HasOne("Store.Domain.Entities.User", "User")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Store.Domain.Entities.User", b =>
-                {
-                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

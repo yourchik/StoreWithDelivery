@@ -2,9 +2,6 @@
 
 public class Audit : BaseEntity
 {
-    
-    public Guid OrderId { get; set; }
-
     public required string EntityName { get; set; }
     
     public required Guid EntityId { get; set; }

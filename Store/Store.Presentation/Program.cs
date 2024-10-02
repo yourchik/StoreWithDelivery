@@ -1,59 +1,76 @@
-using Serilog;
-using Serilog.Sinks.Network;
-using Store.Application;
-using Store.Application.Middleware;
-using Store.Infrastructure;
-using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository;
-using Store.Presentation;
+using Microsoft.EntityFrameworkCore;
+using Serilog; 
+using Store.Application; 
+using Store.Application.Middleware; 
+using Store.Infrastructure; 
+using Store.Infrastructure.Services.Implementations.Repositories.EFCoreRepository; 
+using Store.Presentation; 
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args); 
 
-// Add services to the container.
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Configuration.AddJsonFile("appsettings.json",
-    optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json",
-        optional: true, reloadOnChange: true);
-builder.Configuration.AddEnvironmentVariables();
+// Добавление служб
+builder.Services.AddControllers(); 
+builder.Services.AddEndpointsApiExplorer(); 
+builder.Configuration.AddJsonFile("appsettings.json", 
+        optional: false, reloadOnChange: true) 
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", 
+        optional: true, reloadOnChange: true); 
+builder.Configuration.AddEnvironmentVariables(); 
+builder.WebHost.UseUrls("http://localhost:8070");
+
+// Конфигурация Serilog
 builder.Host.UseSerilog((context, services, configuration) => configuration
-    .ReadFrom.Configuration(context.Configuration)
-    .ReadFrom.Services(services));
+    .ReadFrom.Configuration(context.Configuration) 
+    .ReadFrom.Services(services)); 
 
-builder.Services.AddSwaggerDocumentation();
+// Регистрация Swagger
+builder.Services.AddSwaggerDocumentation(); 
 
-// Infrastructure
-builder.Services.AddInfrastructure(builder.Configuration);
+// Инфраструктура
+builder.Services.AddInfrastructure(builder.Configuration); 
 
-// Application
-builder.Services.AddApplication(builder.Configuration);
+// Приложение
+builder.Services.AddApplication(builder.Configuration); 
 
-var app = builder.Build();
-app.UseSwagger();
+var app = builder.Build(); 
+
+// Настройка Swagger
+app.UseSwagger(); 
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "StoreApi V1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "StoreApi V1"); 
 });
 
-app.UseAuthentication();
-app.UseMiddleware<AdminAccessMiddleware>();
-app.UseAuthorization();
-app.UseMiddleware<ExecutionHandlingMiddleware>();
-app.MapControllers();
+// Настройка Middleware
+app.UseAuthentication(); 
+app.UseMiddleware<AdminAccessMiddleware>(); 
+app.UseAuthorization(); 
+app.UseMiddleware<ExecutionHandlingMiddleware>(); 
 
-var dataInitializer = app.Services.GetRequiredService<DataInitializer>();
-await dataInitializer.InitializeAsync();
+// Маршрутизация
+app.MapControllers(); 
+
+using (var scope = app.Services.CreateScope())
+{
+    // Миграции
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    context.Database.Migrate();
+
+    // Инициализация данных
+    var dataInitializer = scope.ServiceProvider.GetRequiredService<DataInitializer>();
+    await dataInitializer.InitializeAsync();
+}
 
 try
 {
-    Log.Information("Starting Store host");
-    app.Run();
+    Log.Information("Starting Store API host"); 
+    app.Run(); 
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Host Store terminated unexpectedly");
+    Log.Fatal(ex, "Host Store API terminated unexpectedly"); 
 }
 finally
 {
-    Log.CloseAndFlush();
+    Log.CloseAndFlush(); 
 }
