@@ -1,71 +1,32 @@
-﻿using System.Text;
-using System.Text.Json;
-using Delivery.Application.ModelsDto;
-using Delivery.Infrastructure.Services.Implementations.Sheduler.Jobs;
-using Delivery.Infrastructure.Services.Interfaces.RabbitMQ;
-using Delivery.Infrastructure.Services.Interfaces.Sheduler;
+﻿using Contracts.Messages;
+using Delivery.Application.ModelsDto.Orders;
+using Delivery.Application.Services.Interfaces.Orders;
 using Delivery.Infrastructure.Settings;
-using Microsoft.Extensions.Hosting;
+using MassTransit;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 
 namespace Delivery.Infrastructure.Services.Implementations.RabbitMQ;
 
-public class RabbitMqConsumerService : BackgroundService, IRabbitMqConsumerService
+public class RabbitMqConsumerService(
+    ILogger<RabbitMqConsumerService> logger, 
+    IServiceProvider serviceProvider,
+    IOptions<RabbitMqSettings> settings) 
+    : IConsumer<OrderStatusMessage>
 {
-    private readonly RabbitMqSettings _rabbitMqSettings;
-    private readonly HangfireSettings _hangfireSettings;
-    private readonly ILogger<RabbitMqConsumerService> _logger;
-    private readonly IHangFireService _hangFireService;
-    private readonly IConnection _connection;
-    private readonly IModel _channel;
-
-    public RabbitMqConsumerService(IOptions<RabbitMqSettings> rabbitMqSettings, 
-        IOptions<HangfireSettings> hangfireSettings, 
-        ILogger<RabbitMqConsumerService> logger, 
-        IHangFireService hangFireService)
+    public async Task Consume(ConsumeContext<OrderStatusMessage> context)
     {
-        _rabbitMqSettings = rabbitMqSettings.Value;
-        _logger = logger;
-        _hangFireService = hangFireService;
-        _hangfireSettings = hangfireSettings.Value;
-
-        var factory = new ConnectionFactory()
+        if (context.InitiatorId == settings.Value.SystemId)
         {
-            HostName = _rabbitMqSettings.HostName,
-            Port = _rabbitMqSettings.Port,
-            UserName = _rabbitMqSettings.UserName,
-            Password = _rabbitMqSettings.Password
-        };
-        _connection = factory.CreateConnection();
-        _channel = _connection.CreateModel();
-        _channel.QueueDeclare(queue: _rabbitMqSettings.QueueConsume, durable: true, exclusive: false, autoDelete: false, arguments: null);
-    }
-
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        var consumer = new EventingBasicConsumer(_channel);
-        consumer.Received += async (model, ea) =>
-        {
-            var body = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
-            var order = JsonSerializer.Deserialize<OrderMessage>(message);
-            _logger.LogInformation("Consumed message: {message}", message);
-            if (order == null)
-                return;
-            _hangFireService.Execute<UpdateOrderStatusJob>(e => e.RunAsync(order, stoppingToken), _hangfireSettings.GetStatusUpdateInterval());
-        };
-
-        _channel.BasicConsume(queue: _rabbitMqSettings.QueueConsume, autoAck: true, consumer: consumer);
-        return Task.CompletedTask;
-    }
-
-    public override async Task StopAsync(CancellationToken cancellationToken)
-    {
-        await base.StopAsync(cancellationToken);
-        _channel.Close();
-        _connection.Close();
+            logger.LogInformation(
+                $"Message with InitiatorId {context.InitiatorId} was sent by this system. Skipping processing.");
+            return;
+        }
+        var order = context.Message;
+        using var scope = serviceProvider.CreateScope();
+        var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+        await orderService.UpdateOrderStatusAsync(order.OrderId, order.Status);
+        logger.LogInformation("Consumed message: {OrderId}", order.OrderId);
     }
 }

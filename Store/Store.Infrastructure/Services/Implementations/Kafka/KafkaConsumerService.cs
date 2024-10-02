@@ -1,11 +1,12 @@
 ﻿using System.Text.Json;
 using Confluent.Kafka;
+using Contracts.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Store.Application.ModelsDto.Order;
-using Store.Domain.Repositories.Interfaces;
+using Store.Application.ModelsDto.Orders;
+using Store.Application.Services.Interfaces.Entities;
 using Store.Infrastructure.Services.Interfaces.Kafka;
 using Store.Infrastructure.Settings;
 
@@ -49,8 +50,8 @@ public class KafkaConsumerService : BackgroundService, IKafkaConsumerService
                 _logger.LogInformation(
                     $"Received order status update: OrderId = {orderStatus.OrderId}, Status = {orderStatus.Status}");
                 using var scope = _serviceProvider.CreateScope();
-                var orderService = scope.ServiceProvider.GetRequiredService<IOrderRepository>();
-                await orderService.UpdateStatusAsync(orderStatus.OrderId, orderStatus.Status);
+                var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+                await orderService.UpdateOrderStatusAsync(orderStatus.OrderId, orderStatus.Status);
             }
         }
         catch (OperationCanceledException)

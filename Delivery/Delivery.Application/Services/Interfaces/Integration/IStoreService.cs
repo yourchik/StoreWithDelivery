@@ -1,4 +1,5 @@
-﻿using Delivery.Application.ModelsDto;
+﻿using Contracts.Messages;
+using Delivery.Application.ModelsDto.Orders;
 
 namespace Delivery.Application.Services.Interfaces.Integration;
 

@@ -1,5 +1,3 @@
 ﻿namespace Store.Application.ModelsDto.Auth;
 
-public class LoginUserDto : UserDto
-{
-}
+public class LoginUserDto : UserDto;

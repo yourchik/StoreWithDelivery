@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="2.4.0" />
+    <PackageReference Include="MassTransit" Version="8.2.5" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
@@ -20,7 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dtos\" />
+    <Compile Remove="Migrations\20241002091607_OrderUserId.cs" />
+    <Compile Remove="Migrations\20241002091607_OrderUserId.Designer.cs" />
   </ItemGroup>
-
+  
 </Project>

@@ -6,11 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using Store.Application.Middleware;
 using Store.Application.Services.Implementations.AuditManagement;
 using Store.Application.Services.Implementations.Entities;
-using Store.Application.Services.Interfaces;
 using Store.Application.Services.Interfaces.AuditManagement;
 using Store.Application.Services.Interfaces.Entities;
 using Store.Application.Settings;
-using Store.Domain.Entities;
 
 namespace Store.Application;
 
@@ -23,10 +21,9 @@ public static class DependencyInjection
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<IBasketService, BasketService>();
         services.AddScoped<IProductsCategoryService, ProductsCategoryService>();
-        services.AddTransient<IAuthService, AuthService>();
+        services.AddTransient<IAuthenticationService, AuthenticationService>();
         services.AddTransient<IUserService, UserService>();
         services.AddTransient<IAuditService, AuditService>();
-        services.AddSingleton<ExceptionHandlerMapping>();
         services.AddHttpContextAccessor();
         services.AddAuthentication(options =>
         {

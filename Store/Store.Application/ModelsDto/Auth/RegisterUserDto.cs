@@ -4,5 +4,5 @@ namespace Store.Application.ModelsDto.Auth;
 
 public class RegisterUserDto : UserDto
 {
-    public UserRole Role { get; set; }
+    public UserRole Role { get; init; }
 }
